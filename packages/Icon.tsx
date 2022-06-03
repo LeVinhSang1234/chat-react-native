@@ -1575,7 +1575,7 @@ export declare type IconMaterialProps = {
 };
 
 class IconMaterial extends Component<IconProps & IconMaterialProps> {
-  UNSAFE_shouldComponentUpdate(nProps: IconProps & IconMaterialProps) {
+  shouldComponentUpdate(nProps: IconProps & IconMaterialProps) {
     const {name, size, color} = this.props;
     return (
       name !== nProps.name || size !== nProps.size || color !== nProps.color
@@ -5274,7 +5274,7 @@ export declare type IconIonProps = {
 };
 
 class IconIon extends Component<IconProps & IconIonProps> {
-  UNSAFE_shouldComponentUpdate(nProps: IconProps & IconIonProps) {
+  shouldComponentUpdate(nProps: IconProps & IconIonProps) {
     const {name, size, color} = this.props;
     return (
       name !== nProps.name || size !== nProps.size || color !== nProps.color
@@ -11890,7 +11890,7 @@ export declare type IconMaterialCommunityProps = {
 class IconMaterialCommunity extends Component<
   IconProps & IconMaterialCommunityProps
 > {
-  UNSAFE_shouldComponentUpdate(nProps: IconProps & IconMaterialCommunityProps) {
+  shouldComponentUpdate(nProps: IconProps & IconMaterialCommunityProps) {
     const {name, size, color} = this.props;
     return (
       name !== nProps.name || size !== nProps.size || color !== nProps.color

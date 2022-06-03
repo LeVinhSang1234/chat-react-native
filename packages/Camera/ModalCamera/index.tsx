@@ -1,5 +1,5 @@
 import React, {Component, lazy, Suspense} from 'react';
-import {Modal} from 'react-native';
+import {Modal, StatusBar} from 'react-native';
 
 const Camera = lazy(() => import('..'));
 
@@ -17,6 +17,12 @@ class ModalCamera extends Component<ModalCameraProps, ModalCameraState> {
 
   open = () => {
     this.setState({visible: true});
+    StatusBar.setHidden(true);
+  };
+
+  close = () => {
+    this.setState({visible: false});
+    StatusBar.setHidden(false);
   };
 
   render() {
