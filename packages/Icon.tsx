@@ -5283,7 +5283,7 @@ class IconIon extends Component<IconProps & IconIonProps> {
 
   render() {
     const {name, size, color} = this.props;
-    return <IconIon name={name} size={size} color={color} />;
+    return <IconIonLibrary name={name} size={size} color={color} />;
   }
 }
 

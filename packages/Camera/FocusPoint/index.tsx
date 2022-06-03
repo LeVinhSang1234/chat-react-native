@@ -1,3 +1,4 @@
+import {IconIon} from '@/Icon';
 import React, {Component} from 'react';
 import {Animated, Easing, StyleSheet, View} from 'react-native';
 
@@ -5,27 +6,38 @@ interface FocusPointProps {
   focusPoint: {x: number; y: number};
   getLayout: () => {width: number; height: number};
   type: 'front' | 'back';
+  exposure: number;
+  handleResetFocusPoint: () => any;
 }
+
+const heightLine = 120;
 
 class FocusPoint extends Component<FocusPointProps> {
   animated: Animated.Value;
+  animatedLine: Animated.Value;
   constructor(props: FocusPointProps) {
     super(props);
     this.animated = new Animated.Value(0);
+    this.animatedLine = new Animated.Value(0);
   }
 
   shouldComponentUpdate(nProps: FocusPointProps) {
-    const {focusPoint} = this.props;
+    const {focusPoint, exposure} = this.props;
     const {type} = nProps;
     if (type === 'front') {
+      this.animated.stopAnimation();
+      this.animatedLine.stopAnimation();
       this.animated.setValue(0);
       this.animated.extractOffset();
     }
-    return type !== 'front' && focusPoint !== nProps.focusPoint;
+    return (
+      (type !== 'front' && focusPoint !== nProps.focusPoint) ||
+      exposure !== nProps.exposure
+    );
   }
 
   UNSAFE_componentWillReceiveProps(nProps: FocusPointProps) {
-    const {focusPoint, type} = this.props;
+    const {focusPoint, type, exposure} = this.props;
     const {focusPoint: pointProps} = nProps;
     if (
       focusPoint.x !== pointProps.x &&
@@ -33,32 +45,125 @@ class FocusPoint extends Component<FocusPointProps> {
       type === nProps.type &&
       nProps.type === 'back'
     ) {
-      this.animated.setValue(2);
+      this.animatedPoint();
+    } else if (type === 'back' && exposure !== nProps.exposure) {
+      this.handleAnimatedLine();
+    }
+  }
+
+  handleAnimatedLine = () => {
+    const {handleResetFocusPoint} = this.props;
+    this.animated.stopAnimation();
+    this.animatedLine.stopAnimation();
+    Animated.parallel([
       Animated.timing(this.animated, {
         toValue: 1,
         duration: 300,
+        delay: 4000,
         useNativeDriver: true,
-        easing: Easing.elastic(1.1),
-      }).start();
+      }),
+      Animated.timing(this.animatedLine, {
+        toValue: 1,
+        duration: 0,
+        useNativeDriver: true,
+      }),
+    ]).start(({finished}) => {
+      if (finished) {
+        Animated.parallel([
+          Animated.timing(this.animated, {
+            toValue: 0.4,
+            duration: 300,
+            delay: 4000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(this.animatedLine, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true,
+            delay: 4000,
+          }),
+        ]).start(({finished: f}) => {
+          if (f) {
+            Animated.timing(this.animated, {
+              toValue: 0,
+              duration: 300,
+              delay: 4000,
+              useNativeDriver: true,
+            }).start(({finished: fi}) => {
+              if (fi) {
+                handleResetFocusPoint?.();
+              }
+            });
+          }
+        });
+      }
+    });
+  };
+
+  animatedPoint = () => {
+    this.animated.stopAnimation();
+    this.animatedLine.stopAnimation();
+    this.animated.setValue(2);
+    const {handleResetFocusPoint} = this.props;
+    Animated.timing(this.animated, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+      easing: Easing.elastic(1.1),
+    }).start(({finished}) => {
+      if (finished) {
+        Animated.timing(this.animated, {
+          toValue: 0.4,
+          duration: 300,
+          delay: 4000,
+          useNativeDriver: true,
+        }).start(({finished: f}) => {
+          if (f) {
+            Animated.timing(this.animated, {
+              toValue: 0,
+              duration: 300,
+              delay: 4000,
+              useNativeDriver: true,
+            }).start(({finished: fi}) => {
+              if (fi) {
+                handleResetFocusPoint?.();
+              }
+            });
+          }
+        });
+      }
+    });
+  };
+
+  getHeightLine1 = () => {
+    const {exposure} = this.props;
+    if (exposure === -1) {
+      return heightLine / 2;
     }
-  }
+    return heightLine * (1 - exposure);
+  };
+
+  getHeightLine2 = () => {
+    const {exposure} = this.props;
+    if (exposure === -1) {
+      return heightLine / 2;
+    }
+    return heightLine * exposure;
+  };
 
   render() {
     const {focusPoint, getLayout} = this.props;
     const {x, y} = focusPoint;
     const {width, height} = getLayout();
-
     const opacity = this.animated.interpolate({
       inputRange: [0, 1, 2],
       outputRange: [0, 1, 1],
     });
-
     const scale = this.animated.interpolate({
       inputRange: [0, 1, 2],
-      outputRange: [0, 1, 1.5],
+      outputRange: [1, 1, 1.5],
     });
-
-    // const styleLine = y < 0.2 ? {left: -30} : {right: -30};
+    const styleLine = y < 0.2 ? {left: -30} : {right: -30};
 
     return (
       <Animated.View
@@ -67,8 +172,8 @@ class FocusPoint extends Component<FocusPointProps> {
           {
             left: (1 - y) * width - 35,
             top: x * height - 35,
-            opacity,
             transform: [{scale}],
+            opacity,
           },
         ]}>
         <View style={styles.relative}>
@@ -78,7 +183,7 @@ class FocusPoint extends Component<FocusPointProps> {
             <View style={styles.child3} />
             <View style={styles.child4} />
           </Animated.View>
-          {/* <View style={[styles.viewLight, styleLine]}>
+          <View style={[styles.viewLight, styleLine]}>
             <Animated.View
               style={[
                 styles.line1,
@@ -100,7 +205,7 @@ class FocusPoint extends Component<FocusPointProps> {
                 },
               ]}
             />
-          </View> */}
+          </View>
         </View>
       </Animated.View>
     );
