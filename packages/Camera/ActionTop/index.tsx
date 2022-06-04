@@ -26,7 +26,6 @@ class ActionTop extends Component<ActionTopProps> {
 
   renderNameFlash = () => {
     const {flashMode} = this.props;
-    console.log(flashMode);
     if (flashMode !== 'off') {
       return 'ios-flash';
     }

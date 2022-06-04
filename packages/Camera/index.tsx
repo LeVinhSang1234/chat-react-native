@@ -12,6 +12,9 @@ import {
 import {NotAuthorizedProps} from './NotAuthorized';
 import MoveHandle from './MoveHandle';
 import ActionTop from './ActionTop';
+import ActionBottom from './ActionBottom';
+import ImageCapture from './ImageCapture';
+import {debounce} from '@/utils';
 
 const NotAuthorized = lazy(() => import('./NotAuthorized'));
 const FocusPoint = lazy(() => import('./FocusPoint'));
@@ -20,6 +23,7 @@ LogBox.ignoreLogs(['ViewPropTypes will be']);
 
 export declare type CameraProps = {
   onClose?: () => any;
+  onCaptureError?: (e: any) => any;
 } & NotAuthorizedProps;
 
 interface CameraState {
@@ -31,6 +35,13 @@ interface CameraState {
   theme: ColorSchemeName;
   screen: {width: number; height: number};
   flashMode: keyof FlashMode;
+  image?: {
+    deviceOrientation: number;
+    pictureOrientation: number;
+    height: number;
+    width: number;
+    uri: string;
+  };
 }
 
 class Camera extends Component<CameraProps, CameraState> {
@@ -51,6 +62,7 @@ class Camera extends Component<CameraProps, CameraState> {
     };
     this.isFocusPoint = false;
     this.listenAppear = Appearance.addChangeListener(this.onAppThemeChanged);
+    this.takePicture = debounce(this.takePicture, 300);
   }
 
   componentWillUnmount() {
@@ -171,6 +183,25 @@ class Camera extends Component<CameraProps, CameraState> {
     this.setState({flashMode: flash});
   };
 
+  takePicture = async () => {
+    if (this.camera) {
+      try {
+        const data = await this.camera.takePictureAsync({
+          quality: 0,
+          imageType: 'jpeg',
+        });
+        this.setState({image: data});
+      } catch (e) {
+        const {onCaptureError} = this.props;
+        onCaptureError?.(e);
+      }
+    }
+  };
+
+  onResetImage = () => {
+    this.setState({image: undefined});
+  };
+
   render() {
     const {focusPoint, cameraReady, zoom, flashMode} = this.state;
     const {
@@ -180,9 +211,20 @@ class Camera extends Component<CameraProps, CameraState> {
       stylePermission,
       onClose,
     } = this.props;
-    const {type, exposure, theme, screen} = this.state;
+    const {type, exposure, theme, screen, image} = this.state;
     const autoPoint = type === 'front' || !cameraReady ? undefined : focusPoint;
     const backgroundColor = theme === 'light' ? '#fff' : '#000';
+    if (image) {
+      return (
+        <Suspense fallback={null}>
+          <ImageCapture
+            onClose={this.onResetImage}
+            image={image}
+            screen={screen}
+          />
+        </Suspense>
+      );
+    }
     return (
       <Fragment>
         <MoveHandle
@@ -203,7 +245,20 @@ class Camera extends Component<CameraProps, CameraState> {
                 />
               </Suspense>
             }
+            pendingAuthorizationView={
+              <Suspense fallback={null}>
+                <NotAuthorized
+                  cameraPermission={cameraPermission}
+                  cameraPermissionDescription={cameraPermissionDescription}
+                  openSettingAppText={openSettingAppText}
+                  stylePermission={stylePermission}
+                />
+              </Suspense>
+            }
             zoom={zoom}
+            onMountError={e => {
+              console.log(e);
+            }}
             exposure={exposure}
             type={type}
             style={styles.camera}
@@ -211,19 +266,19 @@ class Camera extends Component<CameraProps, CameraState> {
             onCameraReady={this.onCameraReady}
             ref={ref => (this.camera = ref)}
             autoFocusPointOfInterest={autoPoint}
-            flashMode={flashMode}
-          />
-          {cameraReady ? (
-            <Suspense fallback={null}>
-              <FocusPoint
-                handleResetFocusPoint={this.handleResetFocusPoint}
-                exposure={exposure}
-                type={type}
-                getLayout={this.getLayout}
-                focusPoint={focusPoint}
-              />
-            </Suspense>
-          ) : null}
+            flashMode={flashMode}>
+            {cameraReady ? (
+              <Suspense fallback={null}>
+                <FocusPoint
+                  handleResetFocusPoint={this.handleResetFocusPoint}
+                  exposure={exposure}
+                  type={type}
+                  getLayout={this.getLayout}
+                  focusPoint={focusPoint}
+                />
+              </Suspense>
+            ) : null}
+          </RNCamera>
         </MoveHandle>
         <ActionTop
           screen={screen}
@@ -232,6 +287,7 @@ class Camera extends Component<CameraProps, CameraState> {
           onChangeType={this.changeType}
           onChangeFlash={this.onChangeFlash}
         />
+        <ActionBottom screen={screen} takePicture={this.takePicture} />
       </Fragment>
     );
   }
