@@ -1,6 +1,8 @@
-import React, {Component, lazy, Suspense} from 'react';
-import {RNCamera} from 'react-native-camera';
+import React, {Component, Fragment, lazy, Suspense} from 'react';
+import {FlashMode, RNCamera} from 'react-native-camera';
 import {
+  Appearance,
+  ColorSchemeName,
   Dimensions,
   GestureResponderEvent,
   LayoutChangeEvent,
@@ -9,52 +11,61 @@ import {
 } from 'react-native';
 import {NotAuthorizedProps} from './NotAuthorized';
 import MoveHandle from './MoveHandle';
-import FocusPoint from './FocusPoint';
+import ActionTop from './ActionTop';
 
 const NotAuthorized = lazy(() => import('./NotAuthorized'));
+const FocusPoint = lazy(() => import('./FocusPoint'));
 
 LogBox.ignoreLogs(['ViewPropTypes will be']);
 
-export declare type CameraProps = {} & NotAuthorizedProps;
+export declare type CameraProps = {
+  onClose?: () => any;
+} & NotAuthorizedProps;
 
 interface CameraState {
-  permission: 'READY' | 'PENDING_AUTHORIZATION' | 'NOT_AUTHORIZED';
   cameraReady: boolean;
   type: 'front' | 'back';
   focusPoint: {x: number; y: number};
   exposure: number;
   zoom: number;
+  theme: ColorSchemeName;
+  screen: {width: number; height: number};
+  flashMode: keyof FlashMode;
 }
 
 class Camera extends Component<CameraProps, CameraState> {
   camera?: RNCamera | null;
-  screen: {width: number; height: number};
   isFocusPoint: boolean;
+  listenAppear: any;
   constructor(props: CameraProps) {
     super(props);
     this.state = {
-      permission: 'READY',
-      cameraReady: true,
+      cameraReady: false,
       type: 'back',
       focusPoint: {x: 0.5, y: 0.5},
       exposure: -1,
       zoom: 0,
+      theme: Appearance.getColorScheme(),
+      screen: Dimensions.get('window'),
+      flashMode: 'auto',
     };
-    this.screen = Dimensions.get('window');
     this.isFocusPoint = false;
+    this.listenAppear = Appearance.addChangeListener(this.onAppThemeChanged);
   }
+
+  componentWillUnmount() {
+    this.listenAppear?.remove();
+    this.setState = () => {};
+  }
+
+  onAppThemeChanged = ({colorScheme}: any) => {
+    this.setState({theme: colorScheme});
+  };
 
   onCameraReady = () => {
     const {cameraReady} = this.state;
     if (!cameraReady) {
       this.setState({cameraReady: true});
-    }
-  };
-
-  onStatusChange = ({cameraStatus}: any) => {
-    const {permission} = this.state;
-    if (cameraStatus !== permission) {
-      this.setState({permission: cameraStatus});
     }
   };
 
@@ -71,16 +82,16 @@ class Camera extends Component<CameraProps, CameraState> {
   };
 
   onFocusPoint = ({nativeEvent}: GestureResponderEvent) => {
-    const {type} = this.state;
-    if (!nativeEvent || type === 'front') {
+    const {type, cameraReady, screen} = this.state;
+    if (!nativeEvent || type === 'front' || !cameraReady) {
       return;
     }
     const {pageX, pageY} = nativeEvent;
     this.setState({
       exposure: -1,
       focusPoint: {
-        x: pageY / this.screen.height,
-        y: 1 - pageX / this.screen.width,
+        x: pageY / screen.height,
+        y: 1 - pageX / screen.width,
       },
     });
     this.isFocusPoint = true;
@@ -92,19 +103,27 @@ class Camera extends Component<CameraProps, CameraState> {
 
   onLayout = ({nativeEvent}: LayoutChangeEvent) => {
     const {layout} = nativeEvent;
-    this.screen = layout;
+    const {screen} = this.state;
+    if (screen.width !== layout.width || screen.height !== layout.height) {
+      this.setState({screen: layout});
+      console.log('layout');
+    }
   };
 
   getLayout = () => {
-    return this.screen;
+    const {screen} = this.state;
+    return screen;
   };
 
   onMove = ({y}: {y: number}) => {
     if (!this.isFocusPoint) {
       return;
     }
-    const {exposure, type} = this.state;
-    const {height} = this.screen;
+    const {exposure, type, cameraReady, screen} = this.state;
+    if (!cameraReady) {
+      return;
+    }
+    const {height} = screen;
     if (type === 'front') {
       return;
     }
@@ -121,7 +140,10 @@ class Camera extends Component<CameraProps, CameraState> {
     {x, y}: {x: number; y: number},
     {x: xNext, y: yNext}: {x: number; y: number},
   ) => {
-    const {zoom} = this.state;
+    const {zoom, cameraReady} = this.state;
+    if (!cameraReady) {
+      return;
+    }
     let change = 0;
     if (xNext > yNext) {
       change = zoom + (xNext - x) / 20000;
@@ -136,55 +158,81 @@ class Camera extends Component<CameraProps, CameraState> {
     this.setState({zoom: change});
   };
 
+  onChangeFlash = () => {
+    const {flashMode} = this.state;
+    let flash: any;
+    if (flashMode === 'off') {
+      flash = 'auto';
+    } else if (flashMode === 'on') {
+      flash = 'off';
+    } else {
+      flash = 'on';
+    }
+    this.setState({flashMode: flash});
+  };
+
   render() {
-    const {permission, focusPoint, cameraReady, zoom} = this.state;
+    const {focusPoint, cameraReady, zoom, flashMode} = this.state;
     const {
       cameraPermission,
       cameraPermissionDescription,
       openSettingAppText,
       stylePermission,
+      onClose,
     } = this.props;
-    const {type, exposure} = this.state;
-    if (permission !== 'READY') {
-      return (
-        <Suspense fallback={null}>
-          <NotAuthorized
-            cameraPermission={cameraPermission}
-            cameraPermissionDescription={cameraPermissionDescription}
-            openSettingAppText={openSettingAppText}
-            stylePermission={stylePermission}
-          />
-        </Suspense>
-      );
-    }
+    const {type, exposure, theme, screen} = this.state;
     const autoPoint = type === 'front' || !cameraReady ? undefined : focusPoint;
+    const backgroundColor = theme === 'light' ? '#fff' : '#000';
     return (
-      <MoveHandle
-        onZoom={this.onZoom}
-        onLayout={this.onLayout}
-        style={styles.camera}
-        onPressDouble={this.changeType}
-        onTouchEnd={this.onFocusPoint}
-        onMove={this.onMove}>
-        <RNCamera
-          zoom={zoom}
-          exposure={exposure}
-          type={type}
-          style={styles.camera}
-          captureAudio={false}
-          onStatusChange={this.onStatusChange}
-          onCameraReady={this.onCameraReady}
-          ref={ref => (this.camera = ref)}
-          autoFocusPointOfInterest={autoPoint}
+      <Fragment>
+        <MoveHandle
+          onZoom={this.onZoom}
+          onLayout={this.onLayout}
+          style={[styles.camera, {backgroundColor}]}
+          onPressDouble={this.changeType}
+          onTouchEnd={this.onFocusPoint}
+          onMove={this.onMove}>
+          <RNCamera
+            notAuthorizedView={
+              <Suspense fallback={null}>
+                <NotAuthorized
+                  cameraPermission={cameraPermission}
+                  cameraPermissionDescription={cameraPermissionDescription}
+                  openSettingAppText={openSettingAppText}
+                  stylePermission={stylePermission}
+                />
+              </Suspense>
+            }
+            zoom={zoom}
+            exposure={exposure}
+            type={type}
+            style={styles.camera}
+            captureAudio={false}
+            onCameraReady={this.onCameraReady}
+            ref={ref => (this.camera = ref)}
+            autoFocusPointOfInterest={autoPoint}
+            flashMode={flashMode}
+          />
+          {cameraReady ? (
+            <Suspense fallback={null}>
+              <FocusPoint
+                handleResetFocusPoint={this.handleResetFocusPoint}
+                exposure={exposure}
+                type={type}
+                getLayout={this.getLayout}
+                focusPoint={focusPoint}
+              />
+            </Suspense>
+          ) : null}
+        </MoveHandle>
+        <ActionTop
+          screen={screen}
+          flashMode={flashMode}
+          onClose={onClose}
+          onChangeType={this.changeType}
+          onChangeFlash={this.onChangeFlash}
         />
-        <FocusPoint
-          handleResetFocusPoint={this.handleResetFocusPoint}
-          exposure={exposure}
-          type={type}
-          getLayout={this.getLayout}
-          focusPoint={focusPoint}
-        />
-      </MoveHandle>
+      </Fragment>
     );
   }
 }

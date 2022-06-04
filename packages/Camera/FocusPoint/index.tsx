@@ -59,7 +59,6 @@ class FocusPoint extends Component<FocusPointProps> {
       Animated.timing(this.animated, {
         toValue: 1,
         duration: 300,
-        delay: 4000,
         useNativeDriver: true,
       }),
       Animated.timing(this.animatedLine, {

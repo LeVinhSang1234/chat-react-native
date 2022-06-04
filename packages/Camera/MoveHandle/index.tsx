@@ -5,6 +5,7 @@ import {
   View,
   ViewProps,
 } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 
 export declare type MoveHandleProps = {
   onPressDouble?: (e: GestureResponderEvent) => any;
@@ -22,6 +23,7 @@ class MoveHandle extends Component<MoveHandleProps> {
   movePoint?: {x: number; y: number};
   panResponder: any;
   identifierPoint: {[key: string | number]: any};
+  deviceTouch: boolean;
 
   constructor(props: MoveHandleProps) {
     super(props);
@@ -35,6 +37,7 @@ class MoveHandle extends Component<MoveHandleProps> {
       },
       onPanResponderMove: this.onResponderMove,
     });
+    this.deviceTouch = DeviceInfo.hasNotch();
   }
 
   onTouchStart = ({nativeEvent}: GestureResponderEvent) => {
@@ -57,9 +60,12 @@ class MoveHandle extends Component<MoveHandleProps> {
       return;
     }
     const {x, y} = this.pressPoint;
+    if (y < (this.deviceTouch ? 44 : 20)) {
+      return;
+    }
     if (
-      Math.abs(nativeEvent.pageX - x) > 20 ||
-      Math.abs(nativeEvent.pageY - y) > 20
+      Math.abs(nativeEvent.pageX - x) > 40 ||
+      Math.abs(nativeEvent.pageY - y) > 40
     ) {
       if (this.movePoint) {
         onMove?.({

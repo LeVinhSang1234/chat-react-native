@@ -17,12 +17,12 @@ class ModalCamera extends Component<ModalCameraProps, ModalCameraState> {
 
   open = () => {
     this.setState({visible: true});
-    StatusBar.setHidden(true);
+    StatusBar.setHidden(true, 'fade');
   };
 
   close = () => {
     this.setState({visible: false});
-    StatusBar.setHidden(false);
+    StatusBar.setHidden(false, 'fade');
   };
 
   render() {
@@ -30,7 +30,7 @@ class ModalCamera extends Component<ModalCameraProps, ModalCameraState> {
     return (
       <Modal visible={visible} animationType="slide" transparent>
         <Suspense fallback={null}>
-          <Camera />
+          <Camera onClose={this.close} />
         </Suspense>
       </Modal>
     );
