@@ -1,21 +1,21 @@
 import React, {Component} from 'react';
-import {ChatProvider, ChatProviderConsumer} from './packages';
-import {Pressable, SafeAreaView} from 'react-native';
-import Text from '@/Text';
+import {ChatProvider} from './packages';
+import Chat from '@/Chat';
+import {data} from 'datas';
 
 class App extends Component {
   render() {
     return (
       <ChatProvider>
-        <SafeAreaView style={{flex: 1}}>
-          <ChatProviderConsumer>
-            {({openCamera}) => (
-              <Pressable onPress={openCamera}>
-                <Text>Open</Text>
-              </Pressable>
-            )}
-          </ChatProviderConsumer>
-        </SafeAreaView>
+        <Chat
+          user={{
+            _id: '7',
+            avatar:
+              'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
+            name: 'Sang LV',
+          }}
+          messages={data}
+        />
       </ChatProvider>
     );
   }

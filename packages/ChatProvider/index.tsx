@@ -1,27 +1,27 @@
-import {CameraProps} from '@/Camera';
-import ModalCamera from '@/Camera/ModalCamera';
 import React, {Component} from 'react';
 import {ChatProvider as ChatProviderContext} from './provider';
 
-export declare type ChatProviderProps = {
-  camera?: CameraProps;
-};
+export declare type ChatProviderProps = {};
 
 class ChatProvider extends Component {
-  modalCamera?: ModalCamera | null;
-
-  openCamera = (): void => {
-    this.modalCamera?.open();
-  };
-
   render() {
     const {children} = this.props;
     return (
-      <ChatProviderContext.Provider value={{openCamera: this.openCamera}}>
-        {children}
-        <ModalCamera ref={ref => (this.modalCamera = ref)} />
+      <ChatProviderContext.Provider value={{}}>
+        <Children>{children}</Children>
       </ChatProviderContext.Provider>
     );
+  }
+}
+
+class Children extends Component {
+  shouldComponentUpdate() {
+    return false;
+  }
+
+  render() {
+    const {children} = this.props;
+    return children;
   }
 }
 
