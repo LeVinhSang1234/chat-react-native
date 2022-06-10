@@ -1,3 +1,8 @@
+import {LazyExoticComponent} from 'react';
+import {TextInputProps, TextStyle, ViewStyle} from 'react-native';
+
+export declare type ChatProviderProps = {};
+
 export declare type UserMessage = {
   _id: string;
   avatar?: string;
@@ -18,9 +23,53 @@ export declare type IMessage = {
   _id: string;
 };
 
+export declare type ChatDataProviderProps = {
+  ComponentInput?: React.ComponentType<any>;
+  ComponentInputLazy?: LazyExoticComponent<any>;
+  navbarBottomHeight?: number;
+  animationLayout?: (duration?: number) => any;
+  SendButton?: ({
+    color,
+    disabled,
+  }: {
+    color: string;
+    disabled: boolean;
+  }) => JSX.Element;
+  SendButtonDefault?: JSX.Element;
+  allowSendButtonDefault?: boolean;
+  defaultMessage?: string;
+};
+
 export declare type ChatProps = {
   messages: IMessage[];
   user: UserMessage;
+  ComponentInput?: React.ComponentType<any>;
+  ComponentInputLazy?: LazyExoticComponent<any>;
+  navbarBottomHeight?: number;
+  SendButton?: ({
+    color,
+    disabled,
+  }: {
+    color: string;
+    disabled: boolean;
+  }) => JSX.Element;
+  SendButtonDefault?: JSX.Element;
+  allowSendButtonDefault?: boolean;
+  defaultMessage?: string;
 };
 
-export declare type KeyboardProps = {};
+export declare type KeyboardProps = {
+  animationLayout?: (duration?: number) => any;
+};
+
+export declare type InputChatProps = {
+  style?: ViewStyle;
+  styleViewInput?: ViewStyle;
+  styleInput?: TextStyle;
+} & TextInputProps;
+
+export declare type InputProps = {
+  style?: ViewStyle;
+  styleInput?: TextStyle;
+  animationLayout?: (duration?: number) => any;
+} & TextInputProps;

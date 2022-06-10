@@ -15,6 +15,7 @@ class App extends Component {
             name: 'Sang LV',
           }}
           messages={data}
+          navbarBottomHeight={23}
         />
       </ChatProvider>
     );
