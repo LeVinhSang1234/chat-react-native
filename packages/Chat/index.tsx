@@ -1,10 +1,9 @@
 import {ChatDataProvider} from '@/ChatProvider/provider';
-import InputChat from '@/InputChat';
 import Keyboard from '@/Keyboard';
 import Text from '@/Text';
 import {ChatProps} from '@/types';
 import {debounce} from '@/utils';
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import {
   FlatList,
   LayoutAnimation,

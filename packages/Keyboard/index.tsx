@@ -4,8 +4,7 @@ import InputChat from '@/InputChat';
 import KeyboardListener from '@/KeyboardListener';
 import {ChatDataProviderProps, KeyboardProps} from '@/types';
 import React, {Component, Fragment, Suspense} from 'react';
-import {StyleSheet, View, KeyboardEvent, Dimensions} from 'react-native';
-import {ChatProviderConsumer} from '..';
+import {StyleSheet, View, KeyboardEvent} from 'react-native';
 
 interface IKeyboardState {
   height: number;

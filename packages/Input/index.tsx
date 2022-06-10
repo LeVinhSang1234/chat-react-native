@@ -31,7 +31,7 @@ class Input extends Component<InputProps, IState> {
   };
 
   render() {
-    const {style, styleInput, value, animationLayout, ...p} = this.props;
+    const {style, styleInput, value} = this.props;
     const color = Platform.select({
       default: PlatformColor('label'),
       android: PlatformColor('?android:attr/textColor'),
@@ -47,8 +47,7 @@ class Input extends Component<InputProps, IState> {
             android: PlatformColor('?android:attr/placeholderText'),
           })}
           multiline
-          style={[{color}, styleInput]}
-          {...p}>
+          style={[{color}, styleInput]}>
           {value}
         </TextInput>
       </Pressable>

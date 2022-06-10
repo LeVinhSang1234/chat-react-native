@@ -1,4 +1,3 @@
-import InputChat from '@/InputChat';
 import {ChatDataProviderProps} from '@/types';
 import {createContext, useContext} from 'react';
 
