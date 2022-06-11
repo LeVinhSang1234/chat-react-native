@@ -1,4 +1,3 @@
-import {LazyExoticComponent} from 'react';
 import {TextInputProps, TextStyle, ViewStyle} from 'react-native';
 
 export declare type ChatProviderProps = {};
@@ -25,9 +24,11 @@ export declare type IMessage = {
 
 export declare type ChatDataProviderProps = {
   ComponentInput?: React.ComponentType<any>;
-  ComponentInputLazy?: LazyExoticComponent<any>;
   navbarBottomHeight?: number;
-  animationLayout?: (duration?: number) => any;
+  animationLayout?: (
+    duration?: number,
+    creationProp?: 'scaleY' | 'opacity' | 'scaleX',
+  ) => any;
   SendButton?: ({
     color,
     disabled,
@@ -38,13 +39,13 @@ export declare type ChatDataProviderProps = {
   SendButtonDefault?: JSX.Element;
   allowSendButtonDefault?: boolean;
   defaultMessage?: string;
+  Extendsion?: React.ComponentType<any>;
 };
 
 export declare type ChatProps = {
   messages: IMessage[];
   user: UserMessage;
   ComponentInput?: React.ComponentType<any>;
-  ComponentInputLazy?: LazyExoticComponent<any>;
   navbarBottomHeight?: number;
   SendButton?: ({
     color,
@@ -56,6 +57,7 @@ export declare type ChatProps = {
   SendButtonDefault?: JSX.Element;
   allowSendButtonDefault?: boolean;
   defaultMessage?: string;
+  Extendsion?: React.ComponentType<any>;
 };
 
 export declare type KeyboardProps = {

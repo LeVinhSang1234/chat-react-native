@@ -2,7 +2,6 @@ import {ChatDataProvider} from '@/ChatProvider/provider';
 import Keyboard from '@/Keyboard';
 import Text from '@/Text';
 import {ChatProps} from '@/types';
-import {debounce} from '@/utils';
 import React, {Component} from 'react';
 import {
   FlatList,
@@ -13,14 +12,6 @@ import {
 } from 'react-native';
 
 class Chat extends Component<ChatProps> {
-  animatedBegin: boolean;
-
-  constructor(props: ChatProps) {
-    super(props);
-    this.animatedBegin = false;
-    this.removeBeginLayout = debounce(this.removeBeginLayout, 20);
-  }
-
   renderItem = ({item}: any) => {
     return (
       <View key={item._id} style={{paddingVertical: 30}}>
@@ -29,43 +20,39 @@ class Chat extends Component<ChatProps> {
     );
   };
 
-  removeBeginLayout = () => {
-    this.animatedBegin = false;
-  };
-
-  animationLayout = (duration: number = 10) => {
-    if (!this.animatedBegin) {
-      this.animatedBegin = true;
-      const animated = Platform.select({ios: 'keyboard', default: 'easeOut'});
-      const creationProp = Platform.select({ios: 'opacity', default: 'scaleY'});
-      LayoutAnimation.configureNext(
-        LayoutAnimation.create(duration, animated as any, creationProp as any),
-        this.removeBeginLayout,
-        this.removeBeginLayout,
-      );
-    }
+  animationLayout = (
+    duration: number = 10,
+    creationProp: 'scaleY' | 'opacity' | 'scaleX' = Platform.select({
+      ios: 'opacity',
+      default: 'scaleY',
+    }),
+  ) => {
+    const animated = Platform.select({ios: 'keyboard', default: 'easeOut'});
+    LayoutAnimation.configureNext(
+      LayoutAnimation.create(duration, animated as any, creationProp as any),
+    );
   };
 
   render() {
     const {
       messages,
       ComponentInput,
-      ComponentInputLazy,
       navbarBottomHeight,
       SendButton,
       SendButtonDefault,
       allowSendButtonDefault = true,
+      Extendsion,
     } = this.props;
     return (
       <ChatDataProvider.Provider
         value={{
           animationLayout: this.animationLayout,
           ComponentInput: ComponentInput,
-          ComponentInputLazy,
           navbarBottomHeight,
           SendButton,
           SendButtonDefault,
           allowSendButtonDefault,
+          Extendsion,
         }}>
         <View style={[styles.view]} removeClippedSubviews>
           <FlatList

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {ChatProvider} from './packages';
 import Chat from '@/Chat';
 import {data} from 'datas';
+import Extendsion from 'Extendsion';
 
 class App extends Component {
   render() {
@@ -16,6 +17,7 @@ class App extends Component {
           }}
           messages={data}
           navbarBottomHeight={23}
+          Extendsion={Extendsion}
         />
       </ChatProvider>
     );

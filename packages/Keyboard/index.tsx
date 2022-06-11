@@ -3,7 +3,7 @@ import {ChatDataProviderConsumer} from '@/ChatProvider/provider';
 import InputChat from '@/InputChat';
 import KeyboardListener from '@/KeyboardListener';
 import {ChatDataProviderProps, KeyboardProps} from '@/types';
-import React, {Component, Fragment, Suspense} from 'react';
+import React, {Component, Fragment} from 'react';
 import {StyleSheet, View, KeyboardEvent} from 'react-native';
 
 interface IKeyboardState {
@@ -19,18 +19,11 @@ class Keyboard extends Component<KeyboardProps, IKeyboardState> {
   }
 
   renderChild = (props: ChatDataProviderProps) => {
-    const {ComponentInput, ComponentInputLazy, navbarBottomHeight = 0} = props;
+    const {ComponentInput, navbarBottomHeight = 0} = props;
     const {height} = this.state;
     const paddingBottom = !height ? navbarBottomHeight : 0;
     if (ComponentInput) {
       return <ComponentInput style={{paddingBottom}} />;
-    }
-    if (ComponentInputLazy) {
-      return (
-        <Suspense fallback={null}>
-          <ComponentInputLazy style={{paddingBottom}} />
-        </Suspense>
-      );
     }
     return <InputChat style={{paddingBottom}} />;
   };

@@ -58,13 +58,13 @@ class Input extends Component<InputProps, IState> {
 
 const styles = StyleSheet.create({
   input: {
-    minHeight: 38,
+    minHeight: 35,
     borderRadius: 20,
     paddingVertical: 5,
-    paddingHorizontal: 11,
+    paddingHorizontal: 14,
     textAlignVertical: 'center',
     fontSize: 14,
-    paddingTop: 6,
+    paddingTop: 5,
     maxHeight: 180,
     flexGrow: 1,
   },

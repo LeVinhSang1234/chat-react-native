@@ -79,6 +79,10 @@ class KeyboardListener extends Component<IKeyboardListenerProps> {
     this.didFrame?.remove?.();
   }
 
+  shouldComponentUpdate() {
+    return false;
+  }
+
   render() {
     return null;
   }
