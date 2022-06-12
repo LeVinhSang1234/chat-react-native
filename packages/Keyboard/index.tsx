@@ -32,7 +32,10 @@ class Keyboard extends Component<KeyboardProps, IKeyboardState> {
 
   open = (duration: number = 10) => {
     const {animationLayout} = this.props;
-    animationLayout?.(duration);
+    const {height} = this.state;
+    if (!height) {
+      animationLayout?.(duration);
+    }
     this.setState({height: this.initHeight});
   };
 

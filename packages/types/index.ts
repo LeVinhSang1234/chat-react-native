@@ -93,6 +93,7 @@ export declare type ChatProps = {
   timeFormat?: string;
   timezone?: string;
   seenText?: string;
+  renderMessage?: (message: IMessage, index: number) => any;
 };
 
 export declare type KeyboardProps = {
