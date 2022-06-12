@@ -3,7 +3,7 @@ import Input from '@/Input';
 import KeyboardListener from '@/KeyboardListener';
 import {ChatDataProviderProps, InputChatProps} from '@/types';
 import {BlurView} from '@react-native-community/blur';
-import React, {Component} from 'react';
+import React, {PureComponent, Component} from 'react';
 import {
   Animated,
   Appearance,
@@ -34,11 +34,13 @@ interface IInputChatState {
   contextMenuHidden: boolean;
 }
 
-class InputChat extends Component<InputChatProps, IInputChatState> {
+const duration = Platform.select({ios: 250, default: 10});
+
+class InputChat extends PureComponent<InputChatProps, IInputChatState> {
   listenerColor: any;
   animatedButtonDefault: Animated.Value;
-  widthExtendsion: number;
   timeoutContext?: NodeJS.Timeout;
+  timeoutHideExtendsion?: NodeJS.Timeout;
   constructor(props: InputChatProps) {
     super(props);
     const colorScheme = Appearance.getColorScheme();
@@ -48,7 +50,6 @@ class InputChat extends Component<InputChatProps, IInputChatState> {
       hideExtendsion: false,
       contextMenuHidden: true,
     };
-    this.widthExtendsion = 0;
     this.animatedButtonDefault = new Animated.Value(1);
     this.listenerColor = Appearance.addChangeListener(this.ListenerColor);
   }
@@ -71,6 +72,7 @@ class InputChat extends Component<InputChatProps, IInputChatState> {
 
   onChangeText = (v: string) => {
     const {message = ''} = this.state;
+    this.onShowKeyboard({duration} as any);
     if (!message.trim() && v.trim()) {
       Animated.timing(this.animatedButtonDefault, {
         toValue: 0,
@@ -89,82 +91,57 @@ class InputChat extends Component<InputChatProps, IInputChatState> {
     this.setState({message: v});
   };
 
-  renderExtendsion = () => {
-    const {Extendsion}: ChatDataProviderProps = this.context;
-    if (!Extendsion) {
-      return null;
-    }
-    const {hideExtendsion} = this.state;
-    const marginLeft = hideExtendsion ? -this.widthExtendsion : 0;
-    const widthPress = !hideExtendsion ? 0 : 40;
-    const maxWidth = 180;
-    return (
-      <Animated.View
-        style={[styles.extendsion, {marginLeft}]}
-        onLayout={this.onLayoutExtendsion}>
-        <View style={{maxWidth}}>
-          <Extendsion />
-        </View>
-        <PressableAnimated
-          onPress={() =>
-            this.onHideKeyboard({
-              duration: Platform.select({ios: 250, default: 10}),
-            } as any)
-          }
-          style={[
-            styles.pressExtendsion,
-            {
-              width: widthPress,
-              height: widthPress,
-              opacity: Number(hideExtendsion),
-            },
-          ]}>
-          <RightSvg width={30} height={30} />
-        </PressableAnimated>
-      </Animated.View>
-    );
-  };
+  renderExtendsion = () => {};
 
-  onShowKeyboard = ({duration}: KeyboardEvent) => {
+  onShowKeyboard = ({duration: d}: KeyboardEvent) => {
     const {animationLayout, Extendsion}: ChatDataProviderProps = this.context;
     if (Extendsion) {
-      if (this.widthExtendsion > 54) {
+      const {hideExtendsion} = this.state;
+      if (!hideExtendsion) {
         this.setState({hideExtendsion: true});
-        if (this.timeoutContext) {
-          clearInterval(this.timeoutContext);
-          this.timeoutContext = undefined;
-        }
-        this.timeoutContext = setTimeout(() => {
-          this.setState({contextMenuHidden: false});
-        }, 400);
-        animationLayout?.(duration);
       }
+      if (this.timeoutContext) {
+        clearInterval(this.timeoutContext);
+        this.timeoutContext = undefined;
+      }
+      if (this.timeoutHideExtendsion) {
+        clearInterval(this.timeoutHideExtendsion);
+        this.timeoutHideExtendsion = undefined;
+      }
+      this.timeoutContext = setTimeout(() => {
+        const {contextMenuHidden} = this.state;
+        if (contextMenuHidden) {
+          this.setState({contextMenuHidden: false});
+        }
+      }, 400);
+      this.timeoutHideExtendsion = setTimeout(() => {
+        this.onHideKeyboard({duration: d} as any);
+      }, 8000);
+      animationLayout?.(d);
     }
   };
 
-  onHideKeyboard = ({duration}: KeyboardEvent) => {
+  onHideKeyboard = ({duration: d}: KeyboardEvent) => {
     const {Extendsion}: ChatDataProviderProps = this.context;
     if (Extendsion) {
       if (this.timeoutContext) {
         clearInterval(this.timeoutContext);
         this.timeoutContext = undefined;
       }
+      if (this.timeoutHideExtendsion) {
+        clearInterval(this.timeoutHideExtendsion);
+        this.timeoutHideExtendsion = undefined;
+      }
       const {animationLayout}: ChatDataProviderProps = this.context;
       this.setState({hideExtendsion: false, contextMenuHidden: true});
-      animationLayout?.(duration);
-    }
-  };
-
-  onLayoutExtendsion = ({nativeEvent}: LayoutChangeEvent) => {
-    const {hideExtendsion} = this.state;
-    if (!hideExtendsion) {
-      this.widthExtendsion = nativeEvent.layout.width;
+      animationLayout?.(d);
     }
   };
 
   render() {
-    const {style, styleViewInput, ...p} = this.props;
-    const {colorScheme, message, contextMenuHidden} = this.state;
+    const {style, styleViewInput, isKeyboardShow, ...p} = this.props;
+    const {colorScheme, message, contextMenuHidden, hideExtendsion} =
+      this.state;
     const scale = this.animatedButtonDefault.interpolate({
       inputRange: [0, 1],
       outputRange: [1, 0],
@@ -173,23 +150,24 @@ class InputChat extends Component<InputChatProps, IInputChatState> {
       inputRange: [0, 1],
       outputRange: ['80deg', '0deg'],
     });
+    const heightInput = isKeyboardShow ? 'auto' : 35;
     return (
       <BlurView blurType={colorScheme || 'light'} style={style}>
         <View style={styles.view}>
-          {this.renderExtendsion()}
+          <ExtendsionComponent
+            hideExtendsion={hideExtendsion}
+            onHideKeyboard={this.onHideKeyboard}
+          />
           <Input
             placeholder="Aa"
             {...p}
             contextMenuHidden={contextMenuHidden}
-            onPressOut={() =>
-              this.onShowKeyboard({
-                duration: Platform.select({ios: 250, default: 10}),
-              } as any)
-            }
+            onPressOut={() => this.onShowKeyboard({duration} as any)}
             value={message}
             style={[
               {backgroundColor: theme[colorScheme || 'light']},
               styleViewInput,
+              {height: heightInput},
             ]}
             onChangeText={this.onChangeText}
           />
@@ -260,6 +238,58 @@ class ButtonSend extends Component<any> {
   }
 }
 
+class ExtendsionComponent extends Component<any> {
+  widthExtendsion: number;
+  constructor(props: any) {
+    super(props);
+    this.widthExtendsion = 0;
+  }
+
+  shouldComponentUpdate(nProps: any) {
+    const {hideExtendsion} = this.props;
+    return hideExtendsion !== nProps.hideExtendsion;
+  }
+
+  onLayoutExtendsion = ({nativeEvent}: LayoutChangeEvent) => {
+    const {hideExtendsion} = this.props;
+    if (!hideExtendsion) {
+      this.widthExtendsion = nativeEvent.layout.width;
+    }
+  };
+
+  render() {
+    const {Extendsion}: ChatDataProviderProps = this.context;
+    if (!Extendsion) {
+      return null;
+    }
+    const {hideExtendsion, onHideKeyboard} = this.props;
+    const marginLeft = hideExtendsion ? -this.widthExtendsion : 0;
+    const widthPress = !hideExtendsion ? 0 : 40;
+    const maxWidth = 180;
+    return (
+      <Animated.View
+        style={[styles.extendsion, {marginLeft}]}
+        onLayout={this.onLayoutExtendsion}>
+        <View style={{maxWidth}}>
+          <Extendsion />
+        </View>
+        <PressableAnimated
+          onPress={() => onHideKeyboard({duration} as any)}
+          style={[
+            styles.pressExtendsion,
+            {
+              width: widthPress,
+              height: widthPress,
+              opacity: Number(hideExtendsion),
+            },
+          ]}>
+          <RightSvg width={30} height={30} />
+        </PressableAnimated>
+      </Animated.View>
+    );
+  }
+}
+
 const styles = StyleSheet.create({
   likesvg: {
     marginRight: -4,
@@ -310,5 +340,6 @@ const styles = StyleSheet.create({
 
 InputChat.contextType = ChatDataProvider;
 ButtonSend.contextType = ChatDataProvider;
+ExtendsionComponent.contextType = ChatDataProvider;
 
 export default InputChat;

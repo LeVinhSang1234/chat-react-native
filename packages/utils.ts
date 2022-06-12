@@ -31,3 +31,10 @@ export function debounce(func: Function, duration: number = 0): () => any {
     }, duration);
   };
 }
+
+export function timeoutDebounce(func: any, duration: number) {
+  const timeo = setTimeout(func, duration);
+  return {
+    remove: clearTimeout(timeo),
+  };
+}

@@ -68,6 +68,7 @@ export declare type InputChatProps = {
   style?: ViewStyle;
   styleViewInput?: ViewStyle;
   styleInput?: TextStyle;
+  isKeyboardShow?: boolean;
 } & TextInputProps;
 
 export declare type InputProps = {

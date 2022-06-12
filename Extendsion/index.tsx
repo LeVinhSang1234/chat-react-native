@@ -6,7 +6,7 @@ class Extendsion extends Component {
   render() {
     return (
       <View>
-        <Text>Sang 123 1321231 12312 312312312 213123</Text>
+        <Text>Sang 123 1321231 12312</Text>
       </View>
     );
   }

@@ -23,9 +23,11 @@ class Keyboard extends Component<KeyboardProps, IKeyboardState> {
     const {height} = this.state;
     const paddingBottom = !height ? navbarBottomHeight : 0;
     if (ComponentInput) {
-      return <ComponentInput style={{paddingBottom}} />;
+      return (
+        <ComponentInput isKeyboardShow={!!height} style={{paddingBottom}} />
+      );
     }
-    return <InputChat style={{paddingBottom}} />;
+    return <InputChat isKeyboardShow={!!height} style={{paddingBottom}} />;
   };
 
   open = (duration: number = 10) => {
