@@ -5,10 +5,15 @@ import {data} from 'datas';
 import Extendsion from 'Extendsion';
 
 class App extends Component {
+  onSend = (message?: string) => {
+    console.log('message ==>', message);
+  };
+
   render() {
     return (
       <ChatProvider>
         <Chat
+          onSend={this.onSend}
           user={{
             _id: '7',
             avatar:

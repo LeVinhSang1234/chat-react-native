@@ -2,7 +2,8 @@ import {IMessage} from '@/types';
 
 export const data: IMessage[] = [
   {
-    message: 'hahaha',
+    message:
+      'hahaha 10 123 123123123 1231 31 qwe qe qwe qweq eqe qeqw qww eqwe 3qeq eq qe qweq eqeq das dasd ads qwe qeqe wq',
     sender: {
       _id: '1',
       avatar:
@@ -10,9 +11,10 @@ export const data: IMessage[] = [
       name: 'Sang LV',
     },
     _id: '1',
+    createdAt: new Date(),
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 9',
     sender: {
       _id: '2',
       avatar:
@@ -20,29 +22,32 @@ export const data: IMessage[] = [
       name: 'Sang LV',
     },
     _id: '2',
+    createdAt: new Date(),
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 8',
     sender: {
-      _id: '3',
+      _id: '1',
       avatar:
         'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
       name: 'Sang LV',
     },
     _id: '3',
+    createdAt: new Date(),
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 7',
     sender: {
-      _id: '4',
+      _id: '1',
       avatar:
         'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
       name: 'Sang LV',
     },
     _id: '4',
+    createdAt: new Date(),
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 6',
     sender: {
       _id: '5',
       avatar:
@@ -50,9 +55,10 @@ export const data: IMessage[] = [
       name: 'Sang LV',
     },
     _id: '5',
+    createdAt: new Date(),
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 5',
     sender: {
       _id: '6',
       avatar:
@@ -60,9 +66,10 @@ export const data: IMessage[] = [
       name: 'Sang LV',
     },
     _id: '6',
+    createdAt: new Date(),
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 4',
     sender: {
       _id: '7',
       avatar:
@@ -70,9 +77,10 @@ export const data: IMessage[] = [
       name: 'Sang LV',
     },
     _id: '7',
+    createdAt: new Date(),
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 3',
     sender: {
       _id: '8',
       avatar:
@@ -80,9 +88,10 @@ export const data: IMessage[] = [
       name: 'Sang LV',
     },
     _id: '8',
+    createdAt: new Date(),
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 2',
     sender: {
       _id: '9',
       avatar:
@@ -90,9 +99,10 @@ export const data: IMessage[] = [
       name: 'Sang LV',
     },
     _id: '9',
+    createdAt: new Date(),
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 1',
     sender: {
       _id: '10',
       avatar:
@@ -100,5 +110,6 @@ export const data: IMessage[] = [
       name: 'Sang LV',
     },
     _id: '10',
+    createdAt: new Date(),
   },
 ];

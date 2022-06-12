@@ -68,6 +68,7 @@ class InputChat extends PureComponent<InputChatProps, IInputChatState> {
 
   componentWillUnmount() {
     this.listenerColor?.remove?.();
+    this.setState = () => {};
   }
 
   onChangeText = (v: string) => {
@@ -138,10 +139,18 @@ class InputChat extends PureComponent<InputChatProps, IInputChatState> {
     }
   };
 
+  onSend = () => {
+    const {onSend}: ChatDataProviderProps = this.context;
+    const {message} = this.state;
+    onSend(message);
+    this.setState({message: ''});
+  };
+
   render() {
     const {style, styleViewInput, isKeyboardShow, ...p} = this.props;
     const {colorScheme, message, contextMenuHidden, hideExtendsion} =
       this.state;
+    const {styleBottomBar} = this.context;
     const scale = this.animatedButtonDefault.interpolate({
       inputRange: [0, 1],
       outputRange: [1, 0],
@@ -152,7 +161,9 @@ class InputChat extends PureComponent<InputChatProps, IInputChatState> {
     });
     const heightInput = isKeyboardShow ? 'auto' : 35;
     return (
-      <BlurView blurType={colorScheme || 'light'} style={style}>
+      <BlurView
+        blurType={styleBottomBar ? undefined : colorScheme || 'light'}
+        style={[styleBottomBar, style]}>
         <View style={styles.view}>
           <ExtendsionComponent
             hideExtendsion={hideExtendsion}
@@ -172,6 +183,7 @@ class InputChat extends PureComponent<InputChatProps, IInputChatState> {
             onChangeText={this.onChangeText}
           />
           <ButtonSend
+            onSend={this.onSend}
             active={!!message}
             styleSend={{transform: [{scale}], opacity: scale}}
             styleSendDefault={{
@@ -196,24 +208,29 @@ class ButtonSend extends Component<any> {
   }
 
   renderButtonSendDefault = () => {
-    const {SendButtonDefault} = this.context;
+    const {SendButtonDefault, mainColor} = this.context;
     return (
       SendButtonDefault || (
-        <LikeSvg style={styles.likesvg} height={35} fill="#445fff" width={35} />
+        <LikeSvg
+          style={styles.likesvg}
+          height={35}
+          fill={mainColor}
+          width={35}
+        />
       )
     );
   };
 
   renderButtonSend = () => {
-    const {SendButton, allowSendButtonDefault} = this.context;
+    const {SendButton, allowSendButtonDefault, mainColor} = this.context;
     const {active} = this.props;
-    const color = active ? '#445fff' : '#e3e3e3';
+    const color = active ? mainColor : '#e3e3e3';
     if (SendButton) {
       return SendButton?.({color, disabled: active});
     }
     return (
       <SendSvg
-        fill={allowSendButtonDefault ? '#445fff' : color}
+        fill={allowSendButtonDefault ? mainColor : color}
         width={23}
         height={23}
       />
@@ -222,9 +239,9 @@ class ButtonSend extends Component<any> {
 
   render() {
     const {allowSendButtonDefault}: ChatDataProviderProps = this.context;
-    const {styleSendDefault, styleSend} = this.props;
+    const {styleSendDefault, styleSend, onSend} = this.props;
     return (
-      <Pressable style={styles.buttonSend}>
+      <Pressable style={styles.buttonSend} onPress={onSend}>
         {allowSendButtonDefault ? (
           <Animated.View style={[styles.viewSend, styleSendDefault]}>
             {this.renderButtonSendDefault()}

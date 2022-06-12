@@ -20,10 +20,13 @@ export declare type IMessage = {
   files?: FileMessage[];
   sender: UserMessage;
   _id: string;
+  createdAt: Date;
+  seenAt?: Date;
+  readAt?: Date;
 };
 
 export declare type ChatDataProviderProps = {
-  ComponentInput?: React.ComponentType<any>;
+  ComponentBottomBar?: React.ComponentType<any>;
   navbarBottomHeight?: number;
   animationLayout?: (
     duration?: number,
@@ -40,12 +43,16 @@ export declare type ChatDataProviderProps = {
   allowSendButtonDefault?: boolean;
   defaultMessage?: string;
   Extendsion?: React.ComponentType<any>;
+  onSend: (message?: string) => any;
+  user: UserMessage;
+  mainColor: string;
+  styleBottomBar?: ViewStyle;
 };
 
 export declare type ChatProps = {
   messages: IMessage[];
   user: UserMessage;
-  ComponentInput?: React.ComponentType<any>;
+  ComponentBottomBar?: React.ComponentType<any>;
   navbarBottomHeight?: number;
   SendButton?: ({
     color,
@@ -58,6 +65,10 @@ export declare type ChatProps = {
   allowSendButtonDefault?: boolean;
   defaultMessage?: string;
   Extendsion?: React.ComponentType<any>;
+  onSend: (message?: string) => any;
+  mainColor?: string;
+  imageBackground?: string;
+  styleBottomBar?: ViewStyle;
 };
 
 export declare type KeyboardProps = {

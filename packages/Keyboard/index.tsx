@@ -19,12 +19,12 @@ class Keyboard extends Component<KeyboardProps, IKeyboardState> {
   }
 
   renderChild = (props: ChatDataProviderProps) => {
-    const {ComponentInput, navbarBottomHeight = 0} = props;
+    const {ComponentBottomBar, navbarBottomHeight = 0} = props;
     const {height} = this.state;
     const paddingBottom = !height ? navbarBottomHeight : 0;
-    if (ComponentInput) {
+    if (ComponentBottomBar) {
       return (
-        <ComponentInput isKeyboardShow={!!height} style={{paddingBottom}} />
+        <ComponentBottomBar isKeyboardShow={!!height} style={{paddingBottom}} />
       );
     }
     return <InputChat isKeyboardShow={!!height} style={{paddingBottom}} />;
