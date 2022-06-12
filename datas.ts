@@ -12,6 +12,8 @@ export const data: IMessage[] = [
     },
     _id: '1',
     createdAt: new Date(),
+    seenAt: new Date(),
+    readAt: new Date(),
   },
   {
     message: 'hahaha 9',
@@ -23,6 +25,8 @@ export const data: IMessage[] = [
     },
     _id: '2',
     createdAt: new Date(),
+    seenAt: new Date(),
+    readAt: new Date(),
   },
   {
     message: 'hahaha 8',
@@ -34,6 +38,8 @@ export const data: IMessage[] = [
     },
     _id: '3',
     createdAt: new Date(),
+    seenAt: new Date(),
+    readAt: new Date(),
   },
   {
     message: 'hahaha 7',
@@ -45,6 +51,8 @@ export const data: IMessage[] = [
     },
     _id: '4',
     createdAt: new Date(),
+    seenAt: new Date(),
+    readAt: new Date(),
   },
   {
     message: 'hahaha 6',
@@ -56,6 +64,8 @@ export const data: IMessage[] = [
     },
     _id: '5',
     createdAt: new Date(),
+    seenAt: new Date(),
+    readAt: new Date(),
   },
   {
     message: 'hahaha 5',
@@ -67,6 +77,8 @@ export const data: IMessage[] = [
     },
     _id: '6',
     createdAt: new Date(),
+    seenAt: new Date(),
+    readAt: new Date(),
   },
   {
     message: 'hahaha 4',
@@ -78,6 +90,8 @@ export const data: IMessage[] = [
     },
     _id: '7',
     createdAt: new Date(),
+    seenAt: new Date(),
+    readAt: new Date(),
   },
   {
     message: 'hahaha 3',
@@ -88,7 +102,9 @@ export const data: IMessage[] = [
       name: 'Sang LV',
     },
     _id: '8',
-    createdAt: new Date(),
+    createdAt: new Date(2021, 6, 12),
+    seenAt: new Date(),
+    readAt: new Date(),
   },
   {
     message: 'hahaha 2',
@@ -100,6 +116,8 @@ export const data: IMessage[] = [
     },
     _id: '9',
     createdAt: new Date(),
+    seenAt: new Date(),
+    readAt: new Date(),
   },
   {
     message: 'hahaha 1',
@@ -111,5 +129,7 @@ export const data: IMessage[] = [
     },
     _id: '10',
     createdAt: new Date(),
+    seenAt: new Date(),
+    readAt: new Date(),
   },
 ];

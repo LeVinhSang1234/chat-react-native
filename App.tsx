@@ -3,6 +3,9 @@ import {ChatProvider} from './packages';
 import Chat from '@/Chat';
 import {data} from 'datas';
 import Extendsion from 'Extendsion';
+import 'moment/locale/vi';
+import moment from 'moment-timezone';
+moment.locale('vi');
 
 class App extends Component {
   onSend = (message?: string) => {

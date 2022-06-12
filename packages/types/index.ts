@@ -1,4 +1,4 @@
-import {TextInputProps, TextStyle, ViewStyle} from 'react-native';
+import {ImageStyle, TextInputProps, TextStyle, ViewStyle} from 'react-native';
 
 export declare type ChatProviderProps = {};
 
@@ -67,8 +67,32 @@ export declare type ChatProps = {
   Extendsion?: React.ComponentType<any>;
   onSend: (message?: string) => any;
   mainColor?: string;
+  ortherMessageBackground?:
+    | {
+        light: string;
+        dark: string;
+      }
+    | string;
   imageBackground?: string;
   styleBottomBar?: ViewStyle;
+  style?: ImageStyle;
+  styleMessage?: {
+    yourMessageView?: ViewStyle;
+    messageText?: ViewStyle;
+    otherMessageView?: ViewStyle;
+    ortherMessageText?: ViewStyle;
+    avatar?: ImageStyle;
+    sendName?: TextStyle;
+    seenText?: TextStyle;
+    timeText?: TextStyle;
+  };
+  displaySenderName?: boolean;
+  dateTimeFormat?: string;
+  dateTimeYearFormat?: string;
+  dateYearFormat?: string;
+  timeFormat?: string;
+  timezone?: string;
+  seenText?: string;
 };
 
 export declare type KeyboardProps = {
