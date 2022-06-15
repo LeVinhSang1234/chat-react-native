@@ -2,21 +2,35 @@ import {InputProps} from '@/types';
 import React, {Component} from 'react';
 import {Platform, Pressable, StyleSheet, TextInput} from 'react-native';
 
-class InputAndroid extends Component<InputProps> {
+interface InputAndroidState {
+  height: number;
+}
+
+class InputAndroid extends Component<InputProps, InputAndroidState> {
   textInputRef?: TextInput | null;
+  constructor(props: InputProps) {
+    super(props);
+    this.state = {height: 0};
+  }
 
   onPress = () => {
     this.textInputRef?.focus?.();
   };
 
+  onContentSizeChange = ({nativeEvent}: any) => {
+    this.setState({height: nativeEvent.contentSize.height});
+  };
+
   render() {
+    const {height} = this.state;
     const {style, styleInput, value, ...p} = this.props;
     return (
       <Pressable style={[styles.inputView, style]} onPress={this.onPress}>
         <TextInput
           ref={(ref: any) => (this.textInputRef = ref)}
           {...p}
-          style={[styles.inputAndroid, styleInput]}>
+          style={[styles.inputAndroid, styleInput, {height}]}
+          onContentSizeChange={this.onContentSizeChange}>
           {value}
         </TextInput>
       </Pressable>
@@ -72,10 +86,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     flexGrow: 1,
     maxHeight: 180,
-    minHeight: 38,
   },
   inputAndroid: {
-    flex: 1,
+    maxHeight: 180,
+    minHeight: 38,
   },
 });
 
