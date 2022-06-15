@@ -1,20 +1,25 @@
-import {ChatProviderProps} from '@/types';
+// @refresh reset
+import {
+  ChatDataProviderProps,
+  ChatProviderProps,
+  CreateFunctionProps,
+  CreateStaticProps,
+} from '@/types';
 import React, {Component} from 'react';
-import {LogBox, Platform, UIManager} from 'react-native';
+import {LogBox} from 'react-native';
 import {ChatProvider as ChatProviderContext} from './provider';
 
-if (
-  Platform.OS === 'android' &&
-  UIManager.setLayoutAnimationEnabledExperimental
-) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
-LogBox.ignoreLogs([
-  'Overriding previous layout animation',
-  'ViewPropTypes will be removed from React Native',
-]);
+LogBox.ignoreLogs(['ViewPropTypes will be removed from React Native']);
+let provider: ChatDataProviderProps = {};
 
 class ChatProvider extends Component<ChatProviderProps> {
+  static create: CreateStaticProps;
+
+  constructor(props: ChatProviderProps) {
+    super(props);
+    provider = {};
+  }
+
   render() {
     const {children} = this.props;
     return (
@@ -35,5 +40,13 @@ class Children extends Component {
     return children;
   }
 }
+
+ChatProvider.create = (f?: CreateFunctionProps) => {
+  let dataProps = provider;
+  if (typeof f === 'function') {
+    dataProps = f(provider);
+  }
+  return (Com: React.ComponentType<any>) => <Com {...dataProps} />;
+};
 
 export default ChatProvider;

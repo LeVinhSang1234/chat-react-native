@@ -1,75 +1,20 @@
-import {LazyExoticComponent} from 'react';
-import {TextInputProps, TextStyle, ViewStyle} from 'react-native';
-
 export declare type ChatProviderProps = {};
 
-export declare type UserMessage = {
-  _id: string;
-  avatar?: string;
-  name: string;
+export declare type CreateStaticProps = (
+  func: CreateFunctionProps,
+) => (Component: React.ComponentType<any>) => JSX.Element;
+
+export declare type CreateFunctionProps = (data: ChatDataProviderProps) => {
   [key: string]: any;
 };
 
-export declare type FileMessage = {
-  url: string;
-  headers?: {[key: string]: any};
-  type: string;
-};
-
-export declare type IMessage = {
-  message?: string;
-  files?: FileMessage[];
-  sender: UserMessage;
-  _id: string;
-};
-
-export declare type ChatDataProviderProps = {
-  ComponentInput?: React.ComponentType<any>;
-  ComponentInputLazy?: LazyExoticComponent<any>;
-  navbarBottomHeight?: number;
-  animationLayout?: (duration?: number) => any;
-  SendButton?: ({
-    color,
-    disabled,
-  }: {
-    color: string;
-    disabled: boolean;
-  }) => JSX.Element;
-  SendButtonDefault?: JSX.Element;
-  allowSendButtonDefault?: boolean;
-  defaultMessage?: string;
-};
+export declare type ChatDataProviderProps = {};
 
 export declare type ChatProps = {
-  messages: IMessage[];
-  user: UserMessage;
-  ComponentInput?: React.ComponentType<any>;
-  ComponentInputLazy?: LazyExoticComponent<any>;
-  navbarBottomHeight?: number;
-  SendButton?: ({
-    color,
-    disabled,
-  }: {
-    color: string;
-    disabled: boolean;
-  }) => JSX.Element;
-  SendButtonDefault?: JSX.Element;
-  allowSendButtonDefault?: boolean;
-  defaultMessage?: string;
+  messages: any[];
+} & KeyboardAdjustProps;
+
+export declare type KeyboardAdjustProps = {
+  distanceFromField?: number;
+  children?: JSX.Element;
 };
-
-export declare type KeyboardProps = {
-  animationLayout?: (duration?: number) => any;
-};
-
-export declare type InputChatProps = {
-  style?: ViewStyle;
-  styleViewInput?: ViewStyle;
-  styleInput?: TextStyle;
-} & TextInputProps;
-
-export declare type InputProps = {
-  style?: ViewStyle;
-  styleInput?: TextStyle;
-  animationLayout?: (duration?: number) => any;
-} & TextInputProps;

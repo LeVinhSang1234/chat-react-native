@@ -1,8 +1,6 @@
-import {IMessage} from '@/types';
-
-export const data: IMessage[] = [
+export const data: any[] = [
   {
-    message: 'hahaha',
+    message: 'hahaha 12',
     sender: {
       _id: '1',
       avatar:
@@ -12,7 +10,7 @@ export const data: IMessage[] = [
     _id: '1',
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 11 ',
     sender: {
       _id: '2',
       avatar:
@@ -22,7 +20,7 @@ export const data: IMessage[] = [
     _id: '2',
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 10',
     sender: {
       _id: '3',
       avatar:
@@ -32,7 +30,7 @@ export const data: IMessage[] = [
     _id: '3',
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 9',
     sender: {
       _id: '4',
       avatar:
@@ -42,7 +40,7 @@ export const data: IMessage[] = [
     _id: '4',
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 8',
     sender: {
       _id: '5',
       avatar:
@@ -52,7 +50,7 @@ export const data: IMessage[] = [
     _id: '5',
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 7',
     sender: {
       _id: '6',
       avatar:
@@ -62,7 +60,7 @@ export const data: IMessage[] = [
     _id: '6',
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 6',
     sender: {
       _id: '7',
       avatar:
@@ -72,7 +70,7 @@ export const data: IMessage[] = [
     _id: '7',
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 5',
     sender: {
       _id: '8',
       avatar:
@@ -82,7 +80,7 @@ export const data: IMessage[] = [
     _id: '8',
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 4',
     sender: {
       _id: '9',
       avatar:
@@ -92,7 +90,7 @@ export const data: IMessage[] = [
     _id: '9',
   },
   {
-    message: 'hahaha',
+    message: 'hahaha 3',
     sender: {
       _id: '10',
       avatar:
@@ -100,5 +98,25 @@ export const data: IMessage[] = [
       name: 'Sang LV',
     },
     _id: '10',
+  },
+  {
+    message: 'hahaha 2',
+    sender: {
+      _id: '10',
+      avatar:
+        'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
+      name: 'Sang LV',
+    },
+    _id: '11',
+  },
+  {
+    message: 'hahaha 1',
+    sender: {
+      _id: '10',
+      avatar:
+        'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
+      name: 'Sang LV',
+    },
+    _id: '12',
   },
 ];

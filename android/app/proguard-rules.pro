@@ -2,3 +2,5 @@
   *;
 }
 -keep class com.google.android.gms.common.** {*;}
+-keep public class com.horcrux.svg.** {*;}
+

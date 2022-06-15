@@ -30,7 +30,7 @@ class KeyboardListener extends Component<IKeyboardListenerProps> {
     const isAndroid = Platform.OS === 'android';
     if (onWillShow) {
       this.willShow = Keyboard.addListener(
-        isAndroid ? 'keyboardDidShow' : 'keyboardWillShow',
+        isAndroid && !onDidShow ? 'keyboardDidShow' : 'keyboardWillShow',
         e => {
           onWillShow?.(e);
         },
@@ -39,7 +39,7 @@ class KeyboardListener extends Component<IKeyboardListenerProps> {
 
     if (onWillHide) {
       this.willHide = Keyboard.addListener(
-        isAndroid ? 'keyboardDidHide' : 'keyboardWillHide',
+        isAndroid && !onDidHide ? 'keyboardDidHide' : 'keyboardWillHide',
         e => {
           onWillHide?.(e);
         },
@@ -57,7 +57,9 @@ class KeyboardListener extends Component<IKeyboardListenerProps> {
     }
     if (onWillChangeFrame) {
       this.willFrame = Keyboard.addListener(
-        isAndroid ? 'keyboardDidChangeFrame' : 'keyboardWillChangeFrame',
+        isAndroid && !onDidChangeFrame
+          ? 'keyboardDidChangeFrame'
+          : 'keyboardWillChangeFrame',
         e => {
           onWillChangeFrame?.(e);
         },

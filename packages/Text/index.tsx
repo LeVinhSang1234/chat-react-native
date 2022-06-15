@@ -1,28 +1,37 @@
 import React, {Component} from 'react';
 import {
-  Platform,
-  PlatformColor,
+  Appearance,
+  ColorSchemeName,
   Text as TextLibrary,
   TextProps,
 } from 'react-native';
 
-const TextHooks = React.forwardRef((props: TextProps, ref: any) => {
-  const {children, style} = props;
-  const styleDynamic = Platform.select({
-    ios: {color: PlatformColor('label')},
-    android: {color: PlatformColor('?android:attr/textColor')},
-    default: {color: 'black'},
-  });
-  return (
-    <TextLibrary ref={ref} style={[styleDynamic, style]}>
-      {children}
-    </TextLibrary>
-  );
-});
+interface TextState {
+  colorScheme: ColorSchemeName;
+}
+class Text extends Component<TextProps, TextState> {
+  eventAppearance: any;
+  constructor(props: TextProps) {
+    super(props);
+    const colorScheme = Appearance.getColorScheme();
+    this.state = {colorScheme};
+    this.eventAppearance = Appearance.addChangeListener(this.changeColor);
+  }
 
-class Text extends Component<TextProps> {
+  componentWillUnmount() {
+    this.setState = () => {};
+    this.eventAppearance?.remove?.();
+  }
+
+  changeColor = ({colorScheme}: {colorScheme: ColorSchemeName}) => {
+    this.setState({colorScheme});
+  };
+
   render() {
-    return <TextHooks {...this.props} />;
+    const {colorScheme = 'light'} = this.state;
+    const {style, ...p} = this.props;
+    const color = colorScheme === 'light' ? '#000' : '#fff';
+    return <TextLibrary style={[{color}, style]} {...p} />;
   }
 }
 
