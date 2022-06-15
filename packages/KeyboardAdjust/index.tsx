@@ -1,17 +1,8 @@
 import BlurView from '@/BlurView';
 import KeyboardListener from '@/KeyboardListener';
 import {KeyboardAdjustProps} from '@/types';
-import React, {Component, Fragment} from 'react';
-import {
-  Animated,
-  Keyboard,
-  KeyboardEvent,
-  LayoutAnimation,
-  Platform,
-  StyleSheet,
-  TextInput,
-  ViewStyle,
-} from 'react-native';
+import React, {Component} from 'react';
+import {Animated, Keyboard, KeyboardEvent, Platform} from 'react-native';
 
 interface KeyboardAdjustState {
   child?: JSX.Element | null;
@@ -25,8 +16,8 @@ class KeyboardAdjust extends Component<
   heightKeyboardAdjus: number;
   constructor(props: KeyboardAdjustProps) {
     super(props);
-    const {distanceFromField = 0, children = null} = props;
-    this.heightKeyboardAdjus = Platform.select({ios: 291, default: 294});
+    const {distanceFromField = 0} = props;
+    this.heightKeyboardAdjus = Platform.select({ios: 291, default: 249});
     this.heightAninamted = new Animated.Value(distanceFromField);
     this.state = {child: null};
   }
@@ -101,9 +92,13 @@ class KeyboardAdjust extends Component<
 
   render() {
     const {child} = this.state;
+    const {ComponentInput} = this.props;
     return (
       <BlurView>
-        <Children style={{height: this.heightAninamted}}>{child}</Children>
+        <ComponentInput />
+        <Animated.View style={{height: this.heightAninamted}}>
+          {child}
+        </Animated.View>
         <KeyboardListener
           onWillShow={this.onShowKeyboard}
           onWillHide={this.onHideKeyboard}
@@ -113,34 +108,5 @@ class KeyboardAdjust extends Component<
     );
   }
 }
-
-class Children extends Component<{
-  style:
-    | Animated.WithAnimatedObject<ViewStyle>
-    | Animated.WithAnimatedArray<ViewStyle>;
-}> {
-  shouldComponentUpdate(nProps: any) {
-    const {children} = this.props;
-    return children !== nProps.children;
-  }
-
-  render() {
-    const {children, style} = this.props;
-    return (
-      <Fragment>
-        <TextInput style={styles.input} />
-        <Animated.View style={style}>{children}</Animated.View>
-      </Fragment>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    width: '100%',
-    backgroundColor: '#fff',
-  },
-});
 
 export default KeyboardAdjust;

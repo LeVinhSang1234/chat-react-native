@@ -1,14 +1,52 @@
-import {ChatDataProvider} from '@/ChatProvider/provider';
+import {
+  ChatDataProvider,
+  ChatProviderConsumer,
+  KeyboardProvider,
+} from '@/ChatProvider/provider';
+import InputChat from '@/InputChat';
 import KeyboardAdjust from '@/KeyboardAdjust';
 import Text from '@/Text';
 import {ChatProps} from '@/types';
-import React, {Component} from 'react';
-import {FlatList, Pressable, StyleSheet, View} from 'react-native';
+import React, {Component, Fragment} from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 class Chat extends Component<ChatProps> {
   keyboardAdjust?: KeyboardAdjust | null;
 
-  renderItem = ({item}: any) => {
+  render() {
+    const {messages, distanceFromField = 0} = this.props;
+    return (
+      <ChatDataProvider.Provider value={{messages}}>
+        <ChatProviderConsumer>
+          {({width, height}) => (
+            <KeyboardAvoidingView style={{width, height}}>
+              <KeyboardProvider.Provider value={{distanceFromField}}>
+                <Children />
+              </KeyboardProvider.Provider>
+            </KeyboardAvoidingView>
+          )}
+        </ChatProviderConsumer>
+      </ChatDataProvider.Provider>
+    );
+  }
+}
+
+class Children extends Component {
+  keyboardAdjust?: KeyboardAdjust | null;
+  isMove?: boolean;
+
+  shouldComponentUpdate() {
+    return false;
+  }
+
+  renderItem = (item: any) => {
     return (
       <View key={item._id} style={[{paddingVertical: 30}]}>
         <Text>{item.message}</Text>
@@ -21,45 +59,37 @@ class Chat extends Component<ChatProps> {
   };
 
   render() {
-    const {messages, distanceFromField} = this.props;
     return (
-      <ChatDataProvider.Provider value={{}}>
-        <Pressable style={styles.view} onPress={this.dismissKeyboard}>
-          <FlatList
-            removeClippedSubviews
-            style={styles.visible}
-            inverted
-            data={messages}
-            renderItem={this.renderItem}
-            keyExtractor={item => item._id}
-          />
-          <Pressable
-            onPress={() => {
-              this.keyboardAdjust?.register?.(<Text>Sang</Text>);
-            }}
-            style={{backgroundColor: '#e3e3e3', height: 40, width: 40}}>
-            <Text>Click</Text>
-          </Pressable>
-        </Pressable>
-        <KeyboardAdjust
-          ref={ref => (this.keyboardAdjust = ref)}
-          distanceFromField={distanceFromField}
-        />
-      </ChatDataProvider.Provider>
+      <Fragment>
+        <ChatDataProvider.Consumer>
+          {({messages}) => (
+            <ScrollView
+              style={styles.inverted}
+              showsVerticalScrollIndicator={Platform.OS !== 'android'}>
+              <Pressable style={styles.inverted} onPress={this.dismissKeyboard}>
+                {messages.map(e => this.renderItem(e))}
+              </Pressable>
+            </ScrollView>
+          )}
+        </ChatDataProvider.Consumer>
+        <KeyboardProvider.Consumer>
+          {({distanceFromField}) => (
+            <KeyboardAdjust
+              ComponentInput={InputChat}
+              ref={ref => (this.keyboardAdjust = ref)}
+              distanceFromField={distanceFromField}
+            />
+          )}
+        </KeyboardProvider.Consumer>
+      </Fragment>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  view: {
-    flex: 1,
-  },
   inverted: {
     transform: [{scale: -1}],
-  },
-  visible: {
     overflow: 'visible',
-    flexGrow: 1,
   },
 });
 
