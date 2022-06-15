@@ -1,4 +1,4 @@
-import {ChatDataProviderProps} from '@/types';
+import {ChatDataProviderProps, KeyboardDataProvider} from '@/types';
 import {createContext, useContext} from 'react';
 import {Dimensions} from 'react-native';
 
@@ -18,4 +18,8 @@ export const ChatDataProvider = createContext(defaultContext);
 export const useChatDataProvider = () => useContext(ChatDataProvider);
 export const ChatDataProviderConsumer = ChatDataProvider.Consumer;
 
-export const KeyboardProvider = createContext({distanceFromField: 0});
+const dataDefaultKeyboard: KeyboardDataProvider = {
+  distanceFromField: 0,
+};
+
+export const KeyboardProvider = createContext(dataDefaultKeyboard);

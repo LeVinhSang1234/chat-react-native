@@ -2,14 +2,6 @@ import {TextInputProps, TextStyle, ViewStyle} from 'react-native';
 
 export declare type ChatProviderProps = {};
 
-export declare type CreateStaticProps = (
-  func: CreateFunctionProps,
-) => (Component: React.ComponentType<any>) => JSX.Element;
-
-export declare type CreateFunctionProps = (data: ChatDataProviderProps) => {
-  [key: string]: any;
-};
-
 export declare type ChatDataProviderProps = {
   messages: MessagesProps[];
 };
@@ -37,7 +29,10 @@ export declare type MessagesProps = {
 export declare type ChatProps = {
   messages: MessagesProps[];
   ComponentInput?: React.ComponentType<any>;
-} & KeyboardAdjustProps;
+  distanceFromField?: number;
+  children?: JSX.Element;
+  extension?: JSX.Element;
+};
 
 export declare type KeyboardAdjustProps = {
   distanceFromField?: number;
@@ -51,3 +46,8 @@ export declare type InputProps = {
 } & TextInputProps;
 
 export declare type InputChatProps = {};
+
+export declare type KeyboardDataProvider = {
+  distanceFromField: number;
+  extension?: JSX.Element;
+};

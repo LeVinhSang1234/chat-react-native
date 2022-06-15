@@ -3,7 +3,6 @@ import {
   ChatProviderConsumer,
   KeyboardProvider,
 } from '@/ChatProvider/provider';
-import InputChat from '@/InputChat';
 import KeyboardAdjust from '@/KeyboardAdjust';
 import Text from '@/Text';
 import {ChatProps} from '@/types';
@@ -14,6 +13,7 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  TextInput,
   View,
 } from 'react-native';
 
@@ -21,13 +21,13 @@ class Chat extends Component<ChatProps> {
   keyboardAdjust?: KeyboardAdjust | null;
 
   render() {
-    const {messages, distanceFromField = 0} = this.props;
+    const {messages, distanceFromField = 0, extension} = this.props;
     return (
       <ChatDataProvider.Provider value={{messages}}>
         <ChatProviderConsumer>
           {({width, height}) => (
             <KeyboardAvoidingView style={{width, height}}>
-              <KeyboardProvider.Provider value={{distanceFromField}}>
+              <KeyboardProvider.Provider value={{distanceFromField, extension}}>
                 <Children />
               </KeyboardProvider.Provider>
             </KeyboardAvoidingView>
@@ -61,21 +61,27 @@ class Children extends Component {
   render() {
     return (
       <Fragment>
-        <ChatDataProvider.Consumer>
-          {({messages}) => (
-            <ScrollView
-              style={styles.inverted}
-              showsVerticalScrollIndicator={Platform.OS !== 'android'}>
-              <Pressable style={styles.inverted} onPress={this.dismissKeyboard}>
-                {messages.map(e => this.renderItem(e))}
-              </Pressable>
-            </ScrollView>
+        <ChatProviderConsumer>
+          {({width}) => (
+            <ChatDataProvider.Consumer>
+              {({messages}) => (
+                <ScrollView
+                  style={[styles.inverted, {width}]}
+                  showsVerticalScrollIndicator={Platform.OS !== 'android'}>
+                  <Pressable
+                    style={styles.inverted}
+                    onPress={this.dismissKeyboard}>
+                    {messages.map(e => this.renderItem(e))}
+                  </Pressable>
+                </ScrollView>
+              )}
+            </ChatDataProvider.Consumer>
           )}
-        </ChatDataProvider.Consumer>
+        </ChatProviderConsumer>
         <KeyboardProvider.Consumer>
           {({distanceFromField}) => (
             <KeyboardAdjust
-              ComponentInput={InputChat}
+              ComponentInput={TextInput}
               ref={ref => (this.keyboardAdjust = ref)}
               distanceFromField={distanceFromField}
             />

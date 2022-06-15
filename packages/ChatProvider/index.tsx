@@ -1,6 +1,6 @@
 // @refresh reset
 import KeyboardListener from '@/KeyboardListener';
-import {ChatProviderProps, CreateStaticProps} from '@/types';
+import {ChatProviderProps} from '@/types';
 import React, {Component} from 'react';
 import {
   Dimensions,
@@ -21,7 +21,6 @@ interface ChatProviderState {
 }
 
 class ChatProvider extends Component<ChatProviderProps, ChatProviderState> {
-  static create: CreateStaticProps;
   keyboardShow?: boolean;
 
   constructor(props: ChatProviderProps) {
@@ -38,20 +37,21 @@ class ChatProvider extends Component<ChatProviderProps, ChatProviderState> {
   onLayout = ({nativeEvent}: LayoutChangeEvent) => {
     const {layout} = nativeEvent;
     const {width, height, opacity} = this.state;
-    if (!this.keyboardShow) {
-      if (width !== layout.width || height !== layout.height) {
-        this.setState({width: layout.width, height: layout.height, opacity: 1});
-      } else if (!opacity) {
-        this.setState({opacity: 1});
-      }
+    if (
+      width !== layout.width ||
+      (height !== layout.height && !this.keyboardShow)
+    ) {
+      this.setState({width: layout.width, height: layout.height, opacity: 1});
+    } else if (!opacity) {
+      this.setState({opacity: 1});
     }
   };
 
-  onDidShow = () => {
+  onWillShow = () => {
     this.keyboardShow = true;
   };
 
-  onDidHide = () => {
+  onWillHide = () => {
     this.keyboardShow = false;
   };
 
@@ -61,25 +61,14 @@ class ChatProvider extends Component<ChatProviderProps, ChatProviderState> {
     return (
       <ChatProviderContext.Provider value={{width, height, rotate}}>
         <View onLayout={this.onLayout} style={[styles.view, {opacity}]}>
-          <Children>{children}</Children>
+          {children}
         </View>
         <KeyboardListener
-          onDidHide={this.onDidHide}
-          onDidShow={this.onDidShow}
+          onWillHide={this.onWillHide}
+          onWillShow={this.onWillShow}
         />
       </ChatProviderContext.Provider>
     );
-  }
-}
-
-class Children extends Component {
-  shouldComponentUpdate() {
-    return false;
-  }
-
-  render() {
-    const {children} = this.props;
-    return children;
   }
 }
 

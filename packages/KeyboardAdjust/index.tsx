@@ -1,4 +1,5 @@
 import BlurView from '@/BlurView';
+import {ChatProvider} from '@/ChatProvider/provider';
 import KeyboardListener from '@/KeyboardListener';
 import {KeyboardAdjustProps} from '@/types';
 import React, {Component} from 'react';
@@ -95,7 +96,9 @@ class KeyboardAdjust extends Component<
     const {ComponentInput} = this.props;
     return (
       <BlurView>
-        <ComponentInput />
+        <ChatProvider.Consumer>
+          {({width}) => <ComponentInput width={width} />}
+        </ChatProvider.Consumer>
         <Animated.View style={{height: this.heightAninamted}}>
           {child}
         </Animated.View>
