@@ -7,7 +7,7 @@ class App extends Component {
   render() {
     return (
       <ChatProvider>
-        <Chat messages={data} distanceFromField={34} />
+        <Chat messages={data} />
       </ChatProvider>
     );
   }

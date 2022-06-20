@@ -45,9 +45,8 @@ export declare type InputProps = {
   styleInput?: TextStyle;
 } & TextInputProps;
 
-export declare type InputChatProps = {};
-
 export declare type KeyboardDataProvider = {
   distanceFromField: number;
   extension?: JSX.Element;
+  dismiss: () => any;
 };

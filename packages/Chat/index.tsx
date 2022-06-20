@@ -1,93 +1,56 @@
 import {
   ChatDataProvider,
-  ChatProviderConsumer,
+  ChatProvider,
   KeyboardProvider,
 } from '@/ChatProvider/provider';
+import ChildrenFreeze from '@/ChildrenFreeze';
+import InputChat from '@/InputChat';
 import KeyboardAdjust from '@/KeyboardAdjust';
-import Text from '@/Text';
 import {ChatProps} from '@/types';
-import React, {Component, Fragment} from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
+import React, {Component} from 'react';
+import {Platform, ScrollView, StyleSheet, View} from 'react-native';
+import Content from './Content';
 
 class Chat extends Component<ChatProps> {
   keyboardAdjust?: KeyboardAdjust | null;
 
-  render() {
-    const {messages, distanceFromField = 0, extension} = this.props;
-    return (
-      <ChatDataProvider.Provider value={{messages}}>
-        <ChatProviderConsumer>
-          {({width, height}) => (
-            <KeyboardAvoidingView style={{width, height}}>
-              <KeyboardProvider.Provider value={{distanceFromField, extension}}>
-                <Children />
-              </KeyboardProvider.Provider>
-            </KeyboardAvoidingView>
-          )}
-        </ChatProviderConsumer>
-      </ChatDataProvider.Provider>
-    );
-  }
-}
-
-class Children extends Component {
-  keyboardAdjust?: KeyboardAdjust | null;
-  isMove?: boolean;
-
-  shouldComponentUpdate() {
-    return false;
-  }
-
-  renderItem = (item: any) => {
-    return (
-      <View key={item._id} style={[{paddingVertical: 30}]}>
-        <Text>{item.message}</Text>
-      </View>
-    );
-  };
-
-  dismissKeyboard = () => {
+  dismiss = () => {
     this.keyboardAdjust?.dimiss?.();
   };
 
   render() {
+    const {
+      messages,
+      distanceFromField = 0,
+      extension,
+      ComponentInput,
+    } = this.props;
     return (
-      <Fragment>
-        <ChatProviderConsumer>
-          {({width}) => (
-            <ChatDataProvider.Consumer>
-              {({messages}) => (
-                <ScrollView
-                  style={[styles.inverted, {width}]}
-                  showsVerticalScrollIndicator={Platform.OS !== 'android'}>
-                  <Pressable
+      <ChatDataProvider.Provider value={{messages}}>
+        <ChatProvider.Consumer>
+          {({width, height}) => (
+            <View style={{width, height}}>
+              <KeyboardProvider.Provider
+                value={{distanceFromField, extension, dismiss: this.dismiss}}>
+                <ChildrenFreeze>
+                  <ScrollView
                     style={styles.inverted}
-                    onPress={this.dismissKeyboard}>
-                    {messages.map(e => this.renderItem(e))}
-                  </Pressable>
-                </ScrollView>
-              )}
-            </ChatDataProvider.Consumer>
+                    showsVerticalScrollIndicator={Platform.OS !== 'android'}>
+                    <Content />
+                  </ScrollView>
+                </ChildrenFreeze>
+                <ChildrenFreeze distanceFromField={distanceFromField}>
+                  <KeyboardAdjust
+                    ComponentInput={ComponentInput || InputChat}
+                    ref={ref => (this.keyboardAdjust = ref)}
+                    distanceFromField={distanceFromField}
+                  />
+                </ChildrenFreeze>
+              </KeyboardProvider.Provider>
+            </View>
           )}
-        </ChatProviderConsumer>
-        <KeyboardProvider.Consumer>
-          {({distanceFromField}) => (
-            <KeyboardAdjust
-              ComponentInput={TextInput}
-              ref={ref => (this.keyboardAdjust = ref)}
-              distanceFromField={distanceFromField}
-            />
-          )}
-        </KeyboardProvider.Consumer>
-      </Fragment>
+        </ChatProvider.Consumer>
+      </ChatDataProvider.Provider>
     );
   }
 }
@@ -96,6 +59,7 @@ const styles = StyleSheet.create({
   inverted: {
     transform: [{scale: -1}],
     overflow: 'visible',
+    width: '100%',
   },
 });
 
