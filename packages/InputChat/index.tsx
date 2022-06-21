@@ -17,6 +17,7 @@ const colors = {light: '#000', dark: '#fff'};
 
 class InputChat extends Component<InputChatProps, InputChatState> {
   eventChange: any;
+  inputRef?: TextInput | null;
   constructor(props: InputChatProps) {
     super(props);
     this.state = {colorScheme: Appearance.getColorScheme()};
@@ -36,15 +37,21 @@ class InputChat extends Component<InputChatProps, InputChatState> {
     this.setState({colorScheme});
   };
 
+  onPressInput = () => {
+    this.inputRef?.focus?.();
+  };
+
   render() {
     const {colorScheme} = this.state;
     return (
       <Pressable
+        onPress={this.onPressInput}
         style={[
           styles.viewInput,
           {backgroundColor: bg[colorScheme || 'light']},
         ]}>
         <TextInput
+          ref={ref => (this.inputRef = ref)}
           style={[{color: colors[colorScheme || 'light']}]}
           multiline
           textAlignVertical="center"
@@ -59,6 +66,8 @@ const styles = StyleSheet.create({
   viewInput: {
     height: 40,
     paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 20
   },
 });
 
