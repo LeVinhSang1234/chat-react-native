@@ -1,7 +1,7 @@
 import BlurView from '@/BlurView';
 import React, {Component} from 'react';
 import {LayoutChangeEvent, Pressable, StyleSheet, View} from 'react-native';
-import SendSvg from '@/assets/svgs/send.svg';
+// import SendSvg from '@/assets/svgs/send.svg';
 import LikeSvg from '@/assets/svgs/like.svg';
 import {SvgXml} from 'react-native-svg';
 import {ChatProvider} from '@/ChatProvider/provider';

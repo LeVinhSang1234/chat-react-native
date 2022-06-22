@@ -1,11 +1,11 @@
+import BlurView from '@/BlurView';
 import {ChatDataProvider, KeyboardProvider} from '@/ChatProvider/provider';
-import ChildrenFreeze from '@/ChildrenFreeze';
 import Text from '@/Text';
 import React, {Component} from 'react';
 import {
   Appearance,
   ColorSchemeName,
-  Pressable,
+  FlatList,
   PressableProps,
   StyleSheet,
   View,
@@ -15,14 +15,16 @@ interface ContentState {
   colorScheme: ColorSchemeName;
 }
 
-const bg = {light: '#fff', dark: '#000'};
+const bg = {light: '#fff', dark: '#1a1a1a'};
 
 class Content extends Component<PressableProps, ContentState> {
   eventChange: any;
+  scrolling: boolean;
   constructor(props: PressableProps) {
     super(props);
     this.state = {colorScheme: Appearance.getColorScheme()};
     this.eventChange = Appearance.addChangeListener(this.changeColor);
+    this.scrolling = false;
   }
 
   componentWillUnmount() {
@@ -33,7 +35,7 @@ class Content extends Component<PressableProps, ContentState> {
     this.setState({colorScheme});
   };
 
-  renderItem = (item: any) => {
+  renderItem = ({item}: any) => {
     return (
       <View key={item._id} style={[{paddingVertical: 30}]}>
         <Text>{item.message}</Text>
@@ -41,25 +43,42 @@ class Content extends Component<PressableProps, ContentState> {
     );
   };
 
+  onScrollBeginDrag = () => {
+    this.scrolling = true;
+  };
+
+  onScrollEndDrag = () => {
+    this.scrolling = false;
+  };
+
+  touchEnd = (callback: any) => {
+    if (!this.scrolling) {
+      callback?.();
+    }
+  };
+
   render() {
     const {colorScheme} = this.state;
     return (
       <KeyboardProvider.Consumer>
         {({dismiss}) => (
-          <Pressable
-            style={[
-              styles.inverted,
-              {backgroundColor: bg[colorScheme || 'light']},
-            ]}
-            onPress={dismiss}>
-            <ChatDataProvider.Consumer>
-              {({messages}) => (
-                <ChildrenFreeze messages={messages}>
-                  {messages.map(e => this.renderItem(e))}
-                </ChildrenFreeze>
-              )}
-            </ChatDataProvider.Consumer>
-          </Pressable>
+          <ChatDataProvider.Consumer>
+            {({messages}) => (
+              <FlatList
+                onTouchEnd={() => this.touchEnd(dismiss)}
+                onScrollBeginDrag={this.onScrollBeginDrag}
+                onScrollEndDrag={this.onScrollEndDrag}
+                style={[styles.flatlist, {backgroundColor: bg[colorScheme || 'light']}]}
+                inverted
+                contentContainerStyle={[
+                  styles.flatlistContainer,
+                ]}
+                data={messages}
+                renderItem={this.renderItem}
+                keyExtractor={item => item._id}
+              />
+            )}
+          </ChatDataProvider.Consumer>
         )}
       </KeyboardProvider.Consumer>
     );
@@ -67,9 +86,12 @@ class Content extends Component<PressableProps, ContentState> {
 }
 
 const styles = StyleSheet.create({
-  inverted: {
-    transform: [{scale: -1}],
+  flatlist: {
     overflow: 'visible',
+  },
+  flatlistContainer: {
+    justifyContent: 'flex-end',
+    flexGrow: 1,
   },
 });
 

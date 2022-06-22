@@ -33,7 +33,7 @@ class BlurView extends Component<BlurViewProperties, BlurViewState> {
     const Com: any = Platform.select({android: View, default: Blur} as any);
     const styles = Platform.select({
       android: [
-        {backgroundColor: colorScheme === 'light' ? '#fff' : '#000'},
+        {backgroundColor: colorScheme === 'light' ? '#fff' : '#141414'},
         style,
       ],
       ios: style,

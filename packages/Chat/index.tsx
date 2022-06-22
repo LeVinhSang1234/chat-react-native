@@ -1,3 +1,4 @@
+import BlurView from '@/BlurView';
 import {
   ChatDataProvider,
   ChatProvider,
@@ -8,7 +9,7 @@ import InputChat from '@/InputChat';
 import KeyboardAdjust from '@/KeyboardAdjust';
 import {ChatProps} from '@/types';
 import React, {Component} from 'react';
-import {Platform, ScrollView, StyleSheet, View} from 'react-native';
+import {View} from 'react-native';
 import Content from './Content';
 
 class Chat extends Component<ChatProps> {
@@ -32,12 +33,8 @@ class Chat extends Component<ChatProps> {
             <View style={{width, height}}>
               <KeyboardProvider.Provider
                 value={{distanceFromField, extension, dismiss: this.dismiss}}>
-                <ChildrenFreeze>
-                  <ScrollView
-                    style={styles.inverted}
-                    showsVerticalScrollIndicator={Platform.OS !== 'android'}>
-                    <Content />
-                  </ScrollView>
+                <ChildrenFreeze messages={messages}>
+                  <Content />
                 </ChildrenFreeze>
                 <ChildrenFreeze distanceFromField={distanceFromField}>
                   <KeyboardAdjust
@@ -54,13 +51,5 @@ class Chat extends Component<ChatProps> {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  inverted: {
-    transform: [{scale: -1}],
-    overflow: 'visible',
-    width: '100%',
-  },
-});
 
 export default Chat;

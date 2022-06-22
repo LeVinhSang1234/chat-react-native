@@ -13,6 +13,9 @@ interface ChatProviderState {
   opacity: number;
 }
 
+const bg = {light: '#fff', dark: '#141414'};
+
+
 class ChatProvider extends PureComponent<ChatProviderProps, ChatProviderState> {
   keyboardShow?: boolean;
 
