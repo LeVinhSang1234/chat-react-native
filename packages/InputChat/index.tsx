@@ -1,3 +1,4 @@
+import {InputChatProvider} from '@/ChatProvider/provider';
 import {InputChatProps} from '@/types/InputChat';
 import React, {Component} from 'react';
 import {
@@ -44,30 +45,40 @@ class InputChat extends Component<InputChatProps, InputChatState> {
   render() {
     const {colorScheme} = this.state;
     return (
-      <Pressable
-        onPress={this.onPressInput}
-        style={[
-          styles.viewInput,
-          {backgroundColor: bg[colorScheme || 'light']},
-        ]}>
-        <TextInput
-          ref={ref => (this.inputRef = ref)}
-          style={[{color: colors[colorScheme || 'light']}]}
-          multiline
-          textAlignVertical="center"
-          value="sdas"
-        />
-      </Pressable>
+      <InputChatProvider.Consumer>
+        {({onPressOut, contextMenuHidden, message}) => (
+          <Pressable
+            onPress={() => {
+              this.onPressInput();
+              onPressOut();
+            }}
+            style={[
+              styles.viewInput,
+              {backgroundColor: bg[colorScheme || 'light']},
+            ]}>
+            <TextInput
+              onPressOut={onPressOut}
+              contextMenuHidden={contextMenuHidden}
+              placeholder="Aa"
+              ref={ref => (this.inputRef = ref)}
+              style={[{color: colors[colorScheme || 'light']}]}
+              multiline
+              textAlignVertical="center">
+              {message}
+            </TextInput>
+          </Pressable>
+        )}
+      </InputChatProvider.Consumer>
     );
   }
 }
 
 const styles = StyleSheet.create({
   viewInput: {
-    height: 40,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderRadius: 20
+    height: 38,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 20,
   },
 });
 

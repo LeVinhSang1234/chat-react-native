@@ -1,4 +1,3 @@
-import BlurView from '@/BlurView';
 import {
   ChatDataProvider,
   ChatProvider,

@@ -1,10 +1,10 @@
 import BlurView from '@/BlurView';
-import {ChatProvider, KeyboardProvider} from '@/ChatProvider/provider';
+import {KeyboardProvider} from '@/ChatProvider/provider';
 import KeyboardListener from '@/KeyboardListener';
 import {KeyboardAdjustProps} from '@/types';
 import ViewChat from '@/ViewChat';
 import React, {Component} from 'react';
-import {Animated, Keyboard, KeyboardEvent, Platform, View} from 'react-native';
+import {Animated, Keyboard, KeyboardEvent, Platform} from 'react-native';
 
 interface KeyboardAdjustState {
   child?: JSX.Element | null;
@@ -97,17 +97,13 @@ class KeyboardAdjust extends Component<
     const {ComponentInput} = this.props;
     return (
       <BlurView>
-        <ChatProvider.Consumer>
-          {({width}) => (
-            <KeyboardProvider.Consumer>
-              {({extension}) => (
-                <ViewChat extension={extension}>
-                  <ComponentInput width={width} />
-                </ViewChat>
-              )}
-            </KeyboardProvider.Consumer>
+        <KeyboardProvider.Consumer>
+          {({extension}) => (
+            <ViewChat extension={extension}>
+              <ComponentInput />
+            </ViewChat>
           )}
-        </ChatProvider.Consumer>
+        </KeyboardProvider.Consumer>
         <Animated.View style={{height: this.heightAninamted}}>
           {child}
         </Animated.View>

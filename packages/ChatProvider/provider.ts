@@ -28,6 +28,8 @@ const dataDefaultKeyboard: KeyboardDataProvider = {
 const dataDefaultProvider: InputChatProviderTypes = {
   onPressOut: () => null,
   contextMenuHidden: false,
+  message: '',
+  onChangeMessage: () => null,
 };
 
 export const KeyboardProvider = createContext(dataDefaultKeyboard);

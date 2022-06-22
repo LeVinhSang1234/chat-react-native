@@ -58,6 +58,8 @@ export declare type KeyboardDataProvider = {
 };
 
 export declare type InputChatProviderTypes = {
-  onPressOut: (e: NativeSyntheticEvent<NativeTouchEvent>) => void;
+  onPressOut: (e?: NativeSyntheticEvent<NativeTouchEvent>) => void;
   contextMenuHidden: boolean;
+  message: string;
+  onChangeMessage: (v: string) => any;
 };
