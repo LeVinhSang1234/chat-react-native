@@ -1,4 +1,8 @@
-import {ChatDataProviderProps, KeyboardDataProvider} from '@/types';
+import {
+  ChatDataProviderProps,
+  InputChatProviderTypes,
+  KeyboardDataProvider,
+} from '@/types';
 import {createContext, useContext} from 'react';
 import {Dimensions} from 'react-native';
 
@@ -21,4 +25,11 @@ const dataDefaultKeyboard: KeyboardDataProvider = {
   dismiss: () => null,
 };
 
+const dataDefaultProvider: InputChatProviderTypes = {
+  onPressOut: () => null,
+  contextMenuHidden: false,
+};
+
 export const KeyboardProvider = createContext(dataDefaultKeyboard);
+
+export const InputChatProvider = createContext(dataDefaultProvider);

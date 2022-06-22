@@ -1,4 +1,10 @@
-import {TextInputProps, TextStyle, ViewStyle} from 'react-native';
+import {
+  NativeSyntheticEvent,
+  NativeTouchEvent,
+  TextInputProps,
+  TextStyle,
+  ViewStyle,
+} from 'react-native';
 
 export declare type ChatProviderProps = {};
 
@@ -49,4 +55,9 @@ export declare type KeyboardDataProvider = {
   distanceFromField: number;
   extension?: JSX.Element;
   dismiss: () => any;
+};
+
+export declare type InputChatProviderTypes = {
+  onPressOut: (e: NativeSyntheticEvent<NativeTouchEvent>) => void;
+  contextMenuHidden: boolean;
 };
