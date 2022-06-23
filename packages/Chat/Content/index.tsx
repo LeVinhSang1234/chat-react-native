@@ -68,11 +68,12 @@ class Content extends Component<PressableProps, ContentState> {
                 onTouchEnd={() => this.touchEnd(dismiss)}
                 onScrollBeginDrag={this.onScrollBeginDrag}
                 onScrollEndDrag={this.onScrollEndDrag}
-                style={[styles.flatlist, {backgroundColor: bg[colorScheme || 'light']}]}
-                inverted
-                contentContainerStyle={[
-                  styles.flatlistContainer,
+                style={[
+                  styles.flatlist,
+                  {backgroundColor: bg[colorScheme || 'light']},
                 ]}
+                inverted
+                contentContainerStyle={[styles.flatlistContainer]}
                 data={messages}
                 renderItem={this.renderItem}
                 keyExtractor={item => item._id}

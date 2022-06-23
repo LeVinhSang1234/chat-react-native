@@ -46,7 +46,7 @@ class InputChat extends Component<InputChatProps, InputChatState> {
     const {colorScheme} = this.state;
     return (
       <InputChatProvider.Consumer>
-        {({onPressOut, contextMenuHidden, message}) => (
+        {({onPressOut, contextMenuHidden, message, onChangeMessage}) => (
           <Pressable
             onPress={() => {
               this.onPressInput();
@@ -57,12 +57,14 @@ class InputChat extends Component<InputChatProps, InputChatState> {
               {backgroundColor: bg[colorScheme || 'light']},
             ]}>
             <TextInput
+              onChangeText={onChangeMessage}
               onPressOut={onPressOut}
               contextMenuHidden={contextMenuHidden}
               placeholder="Aa"
               ref={ref => (this.inputRef = ref)}
               style={[{color: colors[colorScheme || 'light']}]}
               multiline
+              placeholderTextColor="#6e6e6e"
               textAlignVertical="center">
               {message}
             </TextInput>
@@ -75,9 +77,10 @@ class InputChat extends Component<InputChatProps, InputChatState> {
 
 const styles = StyleSheet.create({
   viewInput: {
-    height: 38,
+    minHeight: 38,
+    maxHeight: 180,
     paddingHorizontal: 14,
-    paddingVertical: 6,
+    paddingVertical: 7,
     borderRadius: 20,
   },
 });

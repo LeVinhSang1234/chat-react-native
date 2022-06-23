@@ -1,19 +1,18 @@
 import BlurView from '@/BlurView';
-import React, {Component, PureComponent} from 'react';
+import React, { PureComponent} from 'react';
 import {
-  Animated,
   LayoutChangeEvent,
   Pressable,
   StyleSheet,
   View,
 } from 'react-native';
-// import SendSvg from '@/assets/svgs/send.svg';
 import RightSvg from '@/assets/svgs/right.svg';
-import LikeSvg from '@/assets/svgs/like.svg';
 import {SvgXml} from 'react-native-svg';
 import {ChatProvider, InputChatProvider} from '@/ChatProvider/provider';
 import ChildrenFreeze from '@/ChildrenFreeze';
 import KeyboardListener from '@/KeyboardListener';
+import AnimatedInput from './AnimatedInput';
+import AnimatedPress from './AnimatedPress';
 
 interface ViewChatProps {
   extension?: JSX.Element;
@@ -115,10 +114,8 @@ class ViewChat extends PureComponent<ViewChatProps, ViewChatState> {
               </ChatProvider.Consumer>
             </ChildrenFreeze>
           ) : null}
-          <ChildrenFreeze>
-            <Pressable style={styles.extension}>
-              <SvgXml width={38} height={38} xml={LikeSvg} />
-            </Pressable>
+          <ChildrenFreeze message={message}>
+            <AnimatedPress message={message} />
           </ChildrenFreeze>
         </BlurView>
         {extension ? (
@@ -128,39 +125,6 @@ class ViewChat extends PureComponent<ViewChatProps, ViewChatState> {
           />
         ) : null}
       </InputChatProvider.Provider>
-    );
-  }
-}
-
-class AnimatedInput extends Component<{width: number}> {
-  animated: Animated.Value;
-  constructor(props: {width: number}) {
-    super(props);
-    this.animated = new Animated.Value(props.width);
-  }
-
-  shouldComponentUpdate() {
-    return false;
-  }
-
-  UNSAFE_componentWillReceiveProps(nProps: {width: number}) {
-    const {width} = this.props;
-    if (width !== nProps.width) {
-      Animated.spring(this.animated, {
-        toValue: nProps.width,
-        bounciness: 1,
-        overshootClamping: true,
-        useNativeDriver: false,
-      }).start();
-    }
-  }
-
-  render() {
-    const {children} = this.props;
-    return (
-      <Animated.View style={[styles.inputView, {width: this.animated}]}>
-        {children}
-      </Animated.View>
     );
   }
 }
@@ -177,9 +141,6 @@ const styles = StyleSheet.create({
     height: 38,
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  inputView: {
-    marginHorizontal: 7,
   },
   pressHideExtension: {
     width: 38,
