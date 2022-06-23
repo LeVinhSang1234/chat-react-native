@@ -17,9 +17,9 @@ class AnimatedPress extends Component<{message: string}> {
 
   UNSAFE_componentWillReceiveProps(nProps: {message: string}) {
     const {message} = this.props;
-    if (message !== nProps.message) {
+    if (!message !== !nProps.message) {
       Animated.timing(this.animated, {
-        toValue: Number(!!message),
+        toValue: Number(!nProps.message),
         duration: 250,
         useNativeDriver: true,
         easing: Easing.elastic(1.3),

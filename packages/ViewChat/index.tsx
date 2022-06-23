@@ -132,7 +132,7 @@ class ViewChat extends PureComponent<ViewChatProps, ViewChatState> {
 const styles = StyleSheet.create({
   view: {
     flexDirection: 'row',
-    paddingVertical: 12,
+    paddingVertical: 8,
     paddingHorizontal: 8,
     alignItems: 'flex-end',
     justifyContent: 'flex-end',

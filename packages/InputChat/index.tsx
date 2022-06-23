@@ -4,6 +4,7 @@ import React, {Component} from 'react';
 import {
   Appearance,
   ColorSchemeName,
+  Platform,
   Pressable,
   StyleSheet,
   TextInput,
@@ -62,7 +63,7 @@ class InputChat extends Component<InputChatProps, InputChatState> {
               contextMenuHidden={contextMenuHidden}
               placeholder="Aa"
               ref={ref => (this.inputRef = ref)}
-              style={[{color: colors[colorScheme || 'light']}]}
+              style={[styles.input, {color: colors[colorScheme || 'light']}]}
               multiline
               placeholderTextColor="#6e6e6e"
               textAlignVertical="center">
@@ -82,6 +83,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
+  },
+  input: {
+    padding: 0,
+    margin: Platform.select({android: -2, default: 0}),
   },
 });
 

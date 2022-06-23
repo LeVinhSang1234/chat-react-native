@@ -25,7 +25,7 @@ class AnimatedInput extends Component<{width: number}> {
       } else {
         Animated.timing(this.animated, {
           toValue: nProps.width,
-          duration: 10,
+          duration: 0,
           useNativeDriver: false,
         }).start();
       }

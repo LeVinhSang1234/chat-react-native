@@ -6,6 +6,7 @@ import {
   Appearance,
   ColorSchemeName,
   FlatList,
+  Platform,
   PressableProps,
   StyleSheet,
   View,
@@ -15,7 +16,10 @@ interface ContentState {
   colorScheme: ColorSchemeName;
 }
 
-const bg = {light: '#fff', dark: '#1a1a1a'};
+const bg = {
+  light: '#fff',
+  dark: Platform.select({android: '#000', default: '#1a1a1a'}),
+};
 
 class Content extends Component<PressableProps, ContentState> {
   eventChange: any;
@@ -88,7 +92,7 @@ class Content extends Component<PressableProps, ContentState> {
 
 const styles = StyleSheet.create({
   flatlist: {
-    overflow: 'visible',
+    overflow: Platform.select({android: 'scroll', default: 'visible'}),
   },
   flatlistContainer: {
     justifyContent: 'flex-end',
