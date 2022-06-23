@@ -98,8 +98,8 @@ class KeyboardAdjust extends Component<
     return (
       <BlurView>
         <KeyboardProvider.Consumer>
-          {({extension}) => (
-            <ViewChat extension={extension}>
+          {({extension, onSend}) => (
+            <ViewChat onSend={onSend} extension={extension}>
               <ComponentInput />
             </ViewChat>
           )}

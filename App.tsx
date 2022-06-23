@@ -8,7 +8,11 @@ class App extends Component {
   render() {
     return (
       <ChatProvider>
-        <Chat messages={data} extension={<Text>Sang ggggggggggggg</Text>} />
+        <Chat
+          sliceMessageBlur={10}
+          messages={data}
+          extension={<Text>Sang ggggggggggggg</Text>}
+        />
       </ChatProvider>
     );
   }

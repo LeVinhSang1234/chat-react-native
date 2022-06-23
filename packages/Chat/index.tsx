@@ -24,14 +24,21 @@ class Chat extends Component<ChatProps> {
       distanceFromField = 0,
       extension,
       ComponentInput,
+      sliceMessageBlur = 0,
+      onSend,
     } = this.props;
     return (
-      <ChatDataProvider.Provider value={{messages}}>
+      <ChatDataProvider.Provider value={{messages, sliceMessageBlur}}>
         <ChatProvider.Consumer>
           {({width, height}) => (
             <View style={{width, height}}>
               <KeyboardProvider.Provider
-                value={{distanceFromField, extension, dismiss: this.dismiss}}>
+                value={{
+                  distanceFromField,
+                  extension,
+                  dismiss: this.dismiss,
+                  onSend,
+                }}>
                 <ChildrenFreeze messages={messages}>
                   <Content />
                 </ChildrenFreeze>

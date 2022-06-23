@@ -1,11 +1,6 @@
 import BlurView from '@/BlurView';
-import React, { PureComponent} from 'react';
-import {
-  LayoutChangeEvent,
-  Pressable,
-  StyleSheet,
-  View,
-} from 'react-native';
+import React, {PureComponent} from 'react';
+import {LayoutChangeEvent, Pressable, StyleSheet, View} from 'react-native';
 import RightSvg from '@/assets/svgs/right.svg';
 import {SvgXml} from 'react-native-svg';
 import {ChatProvider, InputChatProvider} from '@/ChatProvider/provider';
@@ -16,6 +11,7 @@ import AnimatedPress from './AnimatedPress';
 
 interface ViewChatProps {
   extension?: JSX.Element;
+  onSend?: (text?: string) => null;
 }
 
 interface ViewChatState {
@@ -28,6 +24,7 @@ interface ViewChatState {
 
 class ViewChat extends PureComponent<ViewChatProps, ViewChatState> {
   timeout?: NodeJS.Timeout;
+  timeoutCloseExtension?: NodeJS.Timeout;
   constructor(props: ViewChatProps) {
     super(props);
     const {extension} = props;
@@ -60,7 +57,18 @@ class ViewChat extends PureComponent<ViewChatProps, ViewChatState> {
     }
     this.timeout = setTimeout(() => {
       this.setState({contextMenuHidden: false});
-    }, 400);
+    }, 200);
+    this.timeOutClose();
+  };
+
+  timeOutClose = () => {
+    if (this.timeoutCloseExtension) {
+      clearTimeout(this.timeoutCloseExtension);
+      this.timeoutCloseExtension = undefined;
+    }
+    this.timeoutCloseExtension = setTimeout(() => {
+      this.setState({openKeyboard: 0});
+    }, 5000);
   };
 
   keyboardHide = () => {
@@ -72,7 +80,15 @@ class ViewChat extends PureComponent<ViewChatProps, ViewChatState> {
   };
 
   onChangeMessage = (message: string) => {
+    this.timeOutClose();
     this.setState({message});
+  };
+
+  onSend = () => {
+    const {onSend} = this.props;
+    const {message} = this.state;
+    onSend?.(message);
+    this.setState({message: ''});
   };
 
   render() {
@@ -115,7 +131,7 @@ class ViewChat extends PureComponent<ViewChatProps, ViewChatState> {
             </ChildrenFreeze>
           ) : null}
           <ChildrenFreeze message={message}>
-            <AnimatedPress message={message} />
+            <AnimatedPress onSend={this.onSend} message={message} />
           </ChildrenFreeze>
         </BlurView>
         {extension ? (

@@ -10,6 +10,7 @@ export declare type ChatProviderProps = {};
 
 export declare type ChatDataProviderProps = {
   messages: MessagesProps[];
+  sliceMessageBlur: number;
 };
 
 export declare type SenderProps = {
@@ -38,6 +39,8 @@ export declare type ChatProps = {
   distanceFromField?: number;
   children?: JSX.Element;
   extension?: JSX.Element;
+  sliceMessageBlur?: number;
+  onSend?: (text?: string) => any;
 };
 
 export declare type KeyboardAdjustProps = {
@@ -55,6 +58,7 @@ export declare type KeyboardDataProvider = {
   distanceFromField: number;
   extension?: JSX.Element;
   dismiss: () => any;
+  onSend?: (text?: string) => any;
 };
 
 export declare type InputChatProviderTypes = {

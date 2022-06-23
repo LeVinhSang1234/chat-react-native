@@ -1,4 +1,5 @@
-import {InputChatProvider} from '@/ChatProvider/provider';
+import {ChatDataProvider, InputChatProvider} from '@/ChatProvider/provider';
+import ChildrenFreeze from '@/ChildrenFreeze';
 import {InputChatProps} from '@/types/InputChat';
 import React, {Component} from 'react';
 import {
@@ -43,35 +44,64 @@ class InputChat extends Component<InputChatProps, InputChatState> {
     this.inputRef?.focus?.();
   };
 
+  renderMessage = (
+    message: string,
+    sliceMessageBlur: number = 0,
+    contextMenuHidden: boolean = true,
+  ) => {
+    if (
+      !message ||
+      message.length < 18 ||
+      !contextMenuHidden ||
+      !sliceMessageBlur
+    ) {
+      return message;
+    }
+    return message.substring(0, 18) + '...';
+  };
+
   render() {
     const {colorScheme} = this.state;
     return (
-      <InputChatProvider.Consumer>
-        {({onPressOut, contextMenuHidden, message, onChangeMessage}) => (
-          <Pressable
-            onPress={() => {
-              this.onPressInput();
-              onPressOut();
-            }}
-            style={[
-              styles.viewInput,
-              {backgroundColor: bg[colorScheme || 'light']},
-            ]}>
-            <TextInput
-              onChangeText={onChangeMessage}
-              onPressOut={onPressOut}
-              contextMenuHidden={contextMenuHidden}
-              placeholder="Aa"
-              ref={ref => (this.inputRef = ref)}
-              style={[styles.input, {color: colors[colorScheme || 'light']}]}
-              multiline
-              placeholderTextColor="#6e6e6e"
-              textAlignVertical="center">
-              {message}
-            </TextInput>
-          </Pressable>
+      <ChatDataProvider.Consumer>
+        {({sliceMessageBlur}) => (
+          <ChildrenFreeze sliceMessageBlur={sliceMessageBlur}>
+            <InputChatProvider.Consumer>
+              {({onPressOut, contextMenuHidden, message, onChangeMessage}) => (
+                <Pressable
+                  onPress={() => {
+                    this.onPressInput();
+                    onPressOut();
+                  }}
+                  style={[
+                    styles.viewInput,
+                    {backgroundColor: bg[colorScheme || 'light']},
+                  ]}>
+                  <TextInput
+                    onChangeText={onChangeMessage}
+                    onPressOut={onPressOut}
+                    contextMenuHidden={contextMenuHidden}
+                    placeholder="Aa"
+                    ref={ref => (this.inputRef = ref)}
+                    style={[
+                      styles.input,
+                      {color: colors[colorScheme || 'light']},
+                    ]}
+                    multiline
+                    placeholderTextColor="#6e6e6e"
+                    textAlignVertical="center">
+                    {this.renderMessage(
+                      message,
+                      sliceMessageBlur,
+                      contextMenuHidden,
+                    )}
+                  </TextInput>
+                </Pressable>
+              )}
+            </InputChatProvider.Consumer>
+          </ChildrenFreeze>
         )}
-      </InputChatProvider.Consumer>
+      </ChatDataProvider.Consumer>
     );
   }
 }
@@ -83,10 +113,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
+    position: 'relative',
   },
   input: {
     padding: 0,
     margin: Platform.select({android: -2, default: 0}),
+    fontSize: 14,
   },
 });
 

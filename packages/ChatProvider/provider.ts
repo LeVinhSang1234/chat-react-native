@@ -15,6 +15,7 @@ export const ChatProviderConsumer = ChatProvider.Consumer;
 
 const defaultContext: ChatDataProviderProps = {
   messages: [],
+  sliceMessageBlur: 0,
 };
 
 export const ChatDataProvider = createContext(defaultContext);
@@ -23,6 +24,7 @@ export const useChatDataProvider = () => useContext(ChatDataProvider);
 const dataDefaultKeyboard: KeyboardDataProvider = {
   distanceFromField: 0,
   dismiss: () => null,
+  onSend: () => null,
 };
 
 const dataDefaultProvider: InputChatProviderTypes = {

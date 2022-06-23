@@ -4,7 +4,7 @@ import {SvgXml} from 'react-native-svg';
 import LikeSvg from '@/assets/svgs/like.svg';
 import SendSvg from '@/assets/svgs/send.svg';
 
-class AnimatedPress extends Component<{message: string}> {
+class AnimatedPress extends Component<{message: string, onSend: any}> {
   animated: Animated.Value;
   constructor(props: {message: string}) {
     super(props);
@@ -28,6 +28,7 @@ class AnimatedPress extends Component<{message: string}> {
   }
 
   render() {
+    const {onSend} = this.props;
     const animatedSend = this.animated.interpolate({
       inputRange: [0, 1],
       outputRange: [1, 0],
@@ -37,7 +38,7 @@ class AnimatedPress extends Component<{message: string}> {
       outputRange: ['60deg', '0deg'],
     });
     return (
-      <Pressable style={styles.inputView}>
+      <Pressable style={styles.inputView} onPress={onSend}>
         <Animated.View
           style={[
             styles.extension,
